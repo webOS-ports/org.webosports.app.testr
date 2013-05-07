@@ -6,6 +6,7 @@ enyo.depends(
 	"$lib/more-arrangers",
 	//Main App
 	"App.css",
-	"App.js"
+	"App.js",
 	//Test Panels
+	"Html5Audio.js"
 );

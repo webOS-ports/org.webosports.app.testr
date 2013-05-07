@@ -63,7 +63,7 @@ enyo.kind({
 			components:[
 				//Connectivity
 				{kind: "onyx.Toolbar", classes: "list-header", content: "Test cases"},
-				{kind: "ListItem", icon: "icon.png", title: "Empty", ontap: "openEmptyPanel"},
+				{kind: "ListItem", icon: "icon.png", title: "HTML5 Audio", ontap: "openHtml5Audio"},
 			]},
 		]},
 		{name: "ContentPanels",
@@ -73,13 +73,14 @@ enyo.kind({
 		index: 1,
 		components:[
 			{kind: "EmptyPanel"},
+			{kind: "Html5Audio"},
 		]},
 	],
-	openEmptyPanel: function(inSender) {
-		this.$.ContentPanels.setIndex(1);
+	openHtml5Audio: function(inSender) {
+		this.$.ContentPanels.setIndex(2);
 
 		if (enyo.Panels.isScreenNarrow())
-			this.setIndex(1);
+			this.setIndex(2);
 	}
 });
 
