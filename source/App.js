@@ -61,9 +61,10 @@ enyo.kind({
 			fit: true,
 			touch: true,
 			components:[
-				//Connectivity
 				{kind: "onyx.Toolbar", classes: "list-header", content: "Test cases"},
 				{kind: "ListItem", icon: "icon.png", title: "HTML5 Audio", ontap: "openHtml5Audio"},
+				{kind: "ListItem", icon: "icon.png", title: "Telephony", ontap: "openTelephony"},
+				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},
 			]},
 		]},
 		{name: "ContentPanels",
@@ -74,13 +75,24 @@ enyo.kind({
 		components:[
 			{kind: "EmptyPanel"},
 			{kind: "Html5Audio"},
+			{kind: "Telephony"},
+			{kind: "Windowing"},
 		]},
 	],
-	openHtml5Audio: function(inSender) {
-		this.$.ContentPanels.setIndex(2);
+	openPanel: function(index) {
+		this.$.ContentPanels.setIndex(index);
 
 		if (enyo.Panels.isScreenNarrow())
-			this.setIndex(2);
+			this.setIndex(index);
+	},
+	openHtml5Audio: function(inSender) {
+		this.openPanel(1);
+	},
+	openTelephony: function(inSender) {
+		this.openPanel(2);
+	},
+	openWindowing: function (inSender) {
+		this.openPanel(3);
 	}
 });
 

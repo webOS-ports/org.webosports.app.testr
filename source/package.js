@@ -8,5 +8,7 @@ enyo.depends(
 	"App.css",
 	"App.js",
 	//Test Panels
-	"Html5Audio.js"
+	"Html5Audio.js",
+	"Telephony.js",
+	"Windowing.js"
 );
