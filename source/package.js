@@ -10,5 +10,6 @@ enyo.depends(
 	//Test Panels
 	"Html5Audio.js",
 	"Telephony.js",
-	"Windowing.js"
+	"Windowing.js",
+	"Subscriptions.js"
 );
