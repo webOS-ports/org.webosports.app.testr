@@ -65,6 +65,7 @@ enyo.kind({
 				{kind: "ListItem", icon: "icon.png", title: "HTML5 Audio", ontap: "openHtml5Audio"},
 				{kind: "ListItem", icon: "icon.png", title: "Telephony", ontap: "openTelephony"},
 				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},
+				{kind: "ListItem", icon: "icon.png", title: "PalmBus Subscriptions", ontap: "openSubscriptions"},
 			]},
 		]},
 		{name: "ContentPanels",
@@ -77,6 +78,7 @@ enyo.kind({
 			{kind: "Html5Audio"},
 			{kind: "Telephony"},
 			{kind: "Windowing"},
+			{kind: "Subscriptions"}
 		]},
 	],
 	openPanel: function(index) {
@@ -93,6 +95,10 @@ enyo.kind({
 	},
 	openWindowing: function (inSender) {
 		this.openPanel(3);
+	},
+	openSubscriptions: function (inSender, inEvent) {
+		this.log(inEvent);
+		this.openPanel(4);
 	}
 });
 
