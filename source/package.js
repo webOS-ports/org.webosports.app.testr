@@ -11,5 +11,6 @@ enyo.depends(
 	"Html5Audio.js",
 	"Telephony.js",
 	"Windowing.js",
-	"Subscriptions.js"
+	"Subscriptions.js",
+	"Notifications.js"
 );
