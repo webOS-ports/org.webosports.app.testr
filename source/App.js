@@ -66,6 +66,7 @@ enyo.kind({
 				{kind: "ListItem", icon: "icon.png", title: "Telephony", ontap: "openTelephony"},
 				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},
 				{kind: "ListItem", icon: "icon.png", title: "PalmBus Subscriptions", ontap: "openSubscriptions"},
+				{kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"}
 			]},
 		]},
 		{name: "ContentPanels",
@@ -78,7 +79,8 @@ enyo.kind({
 			{kind: "Html5Audio"},
 			{kind: "Telephony"},
 			{kind: "Windowing"},
-			{kind: "Subscriptions"}
+			{kind: "Subscriptions"},
+			{kind: "Geolocation"}
 		]},
 	],
 	openPanel: function(index) {
@@ -97,8 +99,10 @@ enyo.kind({
 		this.openPanel(3);
 	},
 	openSubscriptions: function (inSender, inEvent) {
-		this.log(inEvent);
 		this.openPanel(4);
+	},
+	openGeolocation: function (inSender, inEvent) {
+		this.openPanel(5);
 	}
 });
 
@@ -121,7 +125,7 @@ enyo.kind({
 		if(enyo.Panels.isScreenNarrow()) {
 			this.$.AppPanels.setArrangerKind("CoreNaviArranger");
 			this.$.AppPanels.setDraggable(false);
-			this.$.AppPanels.$ContentPanels.addStyles("box-shadow: 0");
+			this.$.AppPanels.$.ContentPanels.addStyles("box-shadow: 0");
 		}
 		else {
 			this.$.AppPanels.setArrangerKind("CollapsingArranger");
