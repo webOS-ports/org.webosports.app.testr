@@ -1,4 +1,18 @@
-/* Subscriptions.js - panel for manual tests of PalmBus subscriptions for LuneOS */
+/* Subscriptions.js - panel for manual tests of PalmBus subscriptions for LuneOS
+ * 
+ * First test subscribes to luna://com.palm.systemservice/getPreferences for showAlertsWhenLocked, then uses setInterval to repeatedly change it.  
+ * It thus continues to call setPreferences regardless of whether the subscription is still working.
+ * 
+ * Second test subscribes to luna://com.palm.wifi/findnetworks, which emits updates at variable intervals, but on the order of 10s. 
+ * When called from luna-send, it emits updates indefinitely.
+ *
+ * Third test calls luna://com.palm.db/find with watch:true. This immediately returns results, 
+ * and should later return a single NotificationResponse if the results change. 
+ * It does not return repeated updates like getPreferences.   
+ * When find results are returned, the test uses setTimeout to later put another object to DB8.  
+ * This should trigger the NotificationResponse.  When a NotificationResponse is received, the test issues another find. 
+ * Thus, if/when the NotificationResponse is not received, the cycle is broken and no more objects are put.
+ */
 
 enyo.kind({
 	name: "Subscriptions",
