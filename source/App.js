@@ -66,6 +66,7 @@ enyo.kind({
 				{kind: "ListItem", icon: "icon.png", title: "Telephony", ontap: "openTelephony"},
 				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},
 				{kind: "ListItem", icon: "icon.png", title: "PalmBus Subscriptions", ontap: "openSubscriptions"},
+				{kind: "ListItem", icon: "icon.png", title: "Notifications", ontap: "openNotifications"},
 				{kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"}
 			]},
 		]},
@@ -80,6 +81,7 @@ enyo.kind({
 			{kind: "Telephony"},
 			{kind: "Windowing"},
 			{kind: "Subscriptions"},
+			{kind: "Notifications"},
 			{kind: "Geolocation"}
 		]},
 	],
@@ -101,8 +103,11 @@ enyo.kind({
 	openSubscriptions: function (inSender, inEvent) {
 		this.openPanel(4);
 	},
-	openGeolocation: function (inSender, inEvent) {
+	openNotifications: function(inSender) {
 		this.openPanel(5);
+	},
+	openGeolocation: function (inSender, inEvent) {
+		this.openPanel(6);
 	}
 });
 
