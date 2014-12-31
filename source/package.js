@@ -12,5 +12,6 @@ enyo.depends(
 	"Telephony.js",
 	"Windowing.js",
 	"Subscriptions.js",
-	"Notifications.js"
+	"Notifications.js",
+	"Geolocation.js"
 );

@@ -1,7 +1,7 @@
 {
 	"title": "Testr",
 	"id": "org.webosports.app.testr",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"vendor": "WebOS Ports",
 	"vendor_url": "https://github.com/webOS-ports/org.webosports.app.testr",
 	"type": "web",
