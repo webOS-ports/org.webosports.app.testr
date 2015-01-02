@@ -24,8 +24,8 @@ enyo.kind({
 						{components: [
 							{content: "Raise/close a simple banner notification", style: "padding: 5px; color: white"},
 							{kind: "onyx.Button", style: "width: 100%", content: "Add", ontap: "createBannerNotification"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Remove", ontap: "removeBannerNotification"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Close all", ontap: "closeAllBannerNotifications"}
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Remove", ontap: "removeBannerNotification"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Close all", ontap: "closeAllBannerNotifications"}
 						]},
 					]},
 
@@ -47,16 +47,19 @@ enyo.kind({
 		if (!this.palm)
 			return;
 
-		this.currentNotificationId = PalmSystem.addBannerMessage("Test banner message", { }, "", "", 0, false);
+		this.log();
+		this.currentNotificationId = PalmSystem.addBannerMessage("Test banner message", '{ }', "assets/Contacts-favorites-star-blue.png", "alerts");
 	},
 	removeBannerNotification: function() {
 		if (this.currentNotificationId == 0)
 			return;
 
+		this.log(this.currentNotificationId);
 		PalmSystem.removeBannerMessage(this.currentNotificationId);
 		this.currentNotificationId = 0;
 	},
 	closeAllBannerNotifications: function() {
+		this.log();
 		PalmSystem.clearBannerMessages();
 	}
 });

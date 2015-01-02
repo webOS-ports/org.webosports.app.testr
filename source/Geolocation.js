@@ -66,11 +66,11 @@ enyo.kind({
 	],
 		
 	singleLocation: function (inSender, inEvent) {
+		this.$.singleOut.setContent($L("requesting postion..."));
 		this.log("accuracy: ", typeof this.$.accuracyPckr.getSelected().value, this.$.accuracyPckr.getSelected().value,
 				"   max age: ", typeof parseInt(this.$.ageInpt.getValue(), 10), parseInt(this.$.ageInpt.getValue(), 10),
 				"   response time: ", typeof this.$.responseTimePckr.getSelected().value, this.$.responseTimePckr.getSelected().value);
 		this.$.singleLocationService.send({accuracy: this.$.accuracyPckr.getSelected().value, maximumAge: parseInt(this.$.ageInpt.getValue(), 10), responseTime: this.$.responseTimePckr.getSelected().value});
-		this.$.singleOut.setContent($L("position requested..."));
 	},
 	singleLocationSuccess: function (inSender, inEvent) {
 		this.log(inEvent);
@@ -79,10 +79,12 @@ enyo.kind({
 	},
 	singleLocationFail: function (inSender, inEvent) {
 		this.log(inEvent);
-		this.$.singleOut.setContent(
-				this.errorCodes[inEvent.data.errorCode] + "<br>" +
-				"errorCode: " + inEvent.data.errorCode + "<br>" + 
-				"errorText: " + inEvent.data.errorText);
+		var msg = "errorCode: " + inEvent.data.errorCode + "<br>" + 
+				"errorText: " + inEvent.data.errorText;
+		if (this.errorCodes[inEvent.data.errorCode]) {
+			msg = this.errorCodes[inEvent.data.errorCode] + "<br>" + msg;
+		}
+		this.$.singleOut.setContent(msg);
 	},
 	errorCodes: ["Success", "Timeout", "Position_Unavailable", "Unknown", 
 	             "GPS_Permanent_Error - No GPS fix but can still get the cell and Wifi fixes. A TouchPad without GPS returns this error.", 
