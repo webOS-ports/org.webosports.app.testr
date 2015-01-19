@@ -1,0 +1,9 @@
+enyo.depends(
+	"Geolocation.js",
+	"Html5Audio.js",
+	"Notifications.js",
+	"Subscriptions.js",
+	"Telephony.js",
+	"Windowing.js",
+	"testr.js"
+);
