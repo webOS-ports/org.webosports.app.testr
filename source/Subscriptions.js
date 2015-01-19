@@ -20,10 +20,11 @@ enyo.kind({
 	components: [
 	    { kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [
 	         {fit: true, content: $L("Subscriptions")},
-             {content: $L("interval (s)")},
+             {content: $L("interval")},
 	         {kind: 'onyx.InputDecorator', components: [
 	         	 {name: "intervalInput", kind: "onyx.Input", type: "number", attributes: {min: 1}, style: "width: 2.5em;", value: 9}
 	         ]},
+             {content: $L("sec.")},
 	         {kind: "Button", content: $L("Start"), ontap: "startRequests"}
 	    ]},
 	    {
@@ -89,13 +90,13 @@ enyo.kind({
 		var subscriptions = this;
 		var prefsOut = this.$.getPrefsOut;
 		var showAlertsWhenLocked;
-		var getPrefsRequest = new enyo.ServiceRequest({service: "luna://com.palm.systemservice", method: "getPreferences", subscribe: true, resubscribe: false});
-		prefsOut.addContent("request timeout: " + getPrefsRequest.timeout + '<br>');
+		this.getPrefsRequest = new enyo.ServiceRequest({service: "luna://com.palm.systemservice", method: "getPreferences", subscribe: true, resubscribe: false});
+		prefsOut.addContent("request timeout: " + this.getPrefsRequest.timeout + '<br>');
         var getPrefsParameters = {keys: ["showAlertsWhenLocked"]};
         console.log("getPreferences", getPrefsParameters);
-        getPrefsRequest.go(getPrefsParameters);
-        getPrefsRequest.response(handleGetPrefsResponse.bind(this));
-        getPrefsRequest.error(handleGetPrefsFailure.bind(this));
+        this.getPrefsRequest.go(getPrefsParameters);
+        this.getPrefsRequest.response(handleGetPrefsResponse.bind(this));
+        this.getPrefsRequest.error(handleGetPrefsFailure.bind(this));
         
         setInterval(function () {
     		var setPrefsRequest = new enyo.ServiceRequest({service: "luna://com.palm.systemservice", method: "setPreferences", subscribe: false, resubscribe: false});
@@ -133,13 +134,13 @@ enyo.kind({
         }
 	},
 	subscribeFindnetworks: function() {		
-		var findnetworksRequest = new enyo.ServiceRequest({service: "luna://com.palm.wifi", method: "findnetworks", subscribe: true, resubscribe: false});
-		this.$.findnetworksOut.addContent("request timeout: " + findnetworksRequest.timeout + '<br>');
+		this.findnetworksRequest = new enyo.ServiceRequest({service: "luna://com.palm.wifi", method: "findnetworks", subscribe: true, resubscribe: false});
+		this.$.findnetworksOut.addContent("request timeout: " + this.findnetworksRequest.timeout + '<br>');
         var findnetworksParameters = {};
         console.log("findnetworks", findnetworksParameters);
-        findnetworksRequest.go(findnetworksParameters);
-        findnetworksRequest.response(handleFindnetworksResponse.bind(this));
-        findnetworksRequest.error(handleFindnetworksFailure.bind(this));
+        this.findnetworksRequest.go(findnetworksParameters);
+        this.findnetworksRequest.response(handleFindnetworksResponse.bind(this));
+        this.findnetworksRequest.error(handleFindnetworksFailure.bind(this));
         
         function handleFindnetworksResponse(inSender, inResponse) {
         	console.log("handleFindnetworksResponse:", inResponse);
@@ -181,16 +182,26 @@ enyo.kind({
 		    }
 			]
 		});
-		putKindRequest.response(startFind.bind(this));
+		putKindRequest.response(deleteAll.bind(this));
 		putKindRequest.error(handlePutKindFailure.bind(this));
+		
+		function deleteAll(inSender, inResponse) {
+			subscriptions.deleteAllRequest = new enyo.ServiceRequest({service: "luna://com.palm.db", method: "del"});
+			subscriptions.deleteAllRequest.go({
+				query: {from: "org.webosports.app.testr.subscribething:1"},
+				purge: true
+			});
+			subscriptions.deleteAllRequest.response(startFind.bind(this));
+			subscriptions.deleteAllRequest.error(handlePutKindFailure.bind(this));
+		}
         
         function startFind(inSender, inResponse) {
-    		var watchRequest = new enyo.ServiceRequest({service: "luna://com.palm.db", method: "find", subscribe: true, resubscribe: false});
+    		subscriptions.watchRequest = new enyo.ServiceRequest({service: "luna://com.palm.db", method: "find", subscribe: true, resubscribe: false});
             var watchParameters = {query: {from: "org.webosports.app.testr.subscribething:1"}, watch: true, count: true};
             console.log("getPreferences", watchParameters);
-            watchRequest.go(watchParameters);
-            watchRequest.response(handleWatchResponse.bind(this));
-            watchRequest.error(handleWatchFailure.bind(this));            
+            subscriptions.watchRequest.go(watchParameters);
+            subscriptions.watchRequest.response(handleWatchResponse.bind(this));
+            subscriptions.watchRequest.error(handleWatchFailure.bind(this));            
        }
 		
         function handlePutKindFailure(inSender, inResponse) {
