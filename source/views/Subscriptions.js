@@ -1,17 +1,16 @@
 /* Subscriptions.js - panel for manual tests of PalmBus subscriptions for LuneOS
  * 
- * First test subscribes to luna://com.palm.systemservice/getPreferences for showAlertsWhenLocked, then uses setInterval to repeatedly change it.  
+ * subscribeGetPrefs() subscribes to luna://com.palm.systemservice/getPreferences for showAlertsWhenLocked, then uses setInterval to repeatedly change it.  
  * It thus continues to call setPreferences regardless of whether the subscription is still working.
- * 
- * Second test subscribes to luna://com.palm.wifi/findnetworks, which emits updates at variable intervals, but on the order of 10s. 
- * When called from luna-send, it emits updates indefinitely.
  *
- * Third test calls luna://com.palm.db/find with watch:true. This immediately returns results, 
+ * subscribeWatch() calls luna://com.palm.db/find with watch:true. This immediately returns results, 
  * and should later return a single NotificationResponse if the results change. 
  * It does not return repeated updates like getPreferences.   
  * When find results are returned, the test uses setTimeout to later put another object to DB8.  
  * This should trigger the NotificationResponse.  When a NotificationResponse is received, the test issues another find. 
  * Thus, if/when the NotificationResponse is not received, the cycle is broken and no more objects are put.
+ * 
+ * subscribeGeo() subscribes to geolocation updates using PalmService
  */
 
 enyo.kind({
@@ -20,10 +19,11 @@ enyo.kind({
 	components: [
 	    { kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [
 	         {fit: true, content: $L("Subscriptions")},
-             {content: $L("interval (s)")},
+             {content: $L("interv.")},
 	         {kind: 'onyx.InputDecorator', components: [
 	         	 {name: "intervalInput", kind: "onyx.Input", type: "number", attributes: {min: 1}, style: "width: 2.5em;", value: 9}
 	         ]},
+             {content: $L("s")},
 	         {kind: "Button", content: $L("Start"), ontap: "startRequests"}
 	    ]},
 	    {
@@ -34,7 +34,7 @@ enyo.kind({
 	    	    	kind: "Scroller",
 	    	    	strategyKind: "TouchScrollStrategy",
 	    	    	horizontal: "hidden",
-	    	    	style: "height: 38%; border-bottom: solid 1px;",
+	    	    	style: "height: 33%; border-bottom: solid 1px;",
 	    	    	components: [
         	    	    {
         	    	    	name: "getPrefsOut",
@@ -45,26 +45,11 @@ enyo.kind({
 	    	    	]
 	    	    },
 	    	    {
-	    	    	name: "findnetworksScroller",
-	    	    	kind: "Scroller",
-	    	    	strategyKind: "TouchScrollStrategy",
-	    	    	horizontal: "hidden",
-	    	    	style: "height: 24%; border-bottom: solid 1px;",
-	    	    	components: [
-        	    	    {
-        	    	    	name: "findnetworksOut",
-        	    	    	allowHtml: true,
-        	    	    	content: "luna://com.palm.wifi/findnetworks<br>",
-        	    	    	style: "color: white; padding: 5px;"
-        	    	    }
-	    	    	]
-	    	    },
-	    	    {
 	    	    	name: "watchScroller",
 	    	    	kind: "Scroller",
 	    	    	strategyKind: "TouchScrollStrategy",
 	    	    	horizontal: "hidden",
-	    	    	style: "height: 38%;",
+	    	    	style: "height: 33%; border-bottom: solid 1px;",
 	    	    	components: [
         	    	    {
         	    	    	name: "watchOut",
@@ -73,29 +58,54 @@ enyo.kind({
         	    	    	style: "color: white; padding: 5px;"
         	    	    }
 	    	    	]
+	    	    },
+	    	    {
+	    	    	name: "geoScroller",
+	    	    	kind: "Scroller",
+	    	    	strategyKind: "TouchScrollStrategy",
+	    	    	horizontal: "hidden",
+	    	    	style: "height: 34%;",
+	    	    	components: [
+        	    	    {
+        	    	    	name: "geoOut",
+        	    	    	allowHtml: true,
+        	    	    	content: "palm://com.palm.location/startTracking<br>",
+        	    	    	style: "color: white; padding: 5px;"
+        	    	    }
+	    	    	]
 	    	    }
 	    	]
+	    },
+	    {
+	    	name: "geoService",
+	    	kind: "enyo.PalmService",
+	    	service: "palm://com.palm.location",
+	    	method: "startTracking",
+	    	subscribe: true,
+	    	resubscribe: false,
+	    	onResponse: "geoResponse",
+	    	onError: "geoError"
 	    }
 	],
 	
 	startRequests: function (inSender, inRequest) {
 		this.subscribeGetPrefs();
-		
-		this.subscribeFindnetworks();
-		
+				
 		this.subscribeWatch();
+
+		this.subscribeGeo();
 	},
 	subscribeGetPrefs: function () {
 		var subscriptions = this;
 		var prefsOut = this.$.getPrefsOut;
 		var showAlertsWhenLocked;
-		var getPrefsRequest = new enyo.ServiceRequest({service: "luna://com.palm.systemservice", method: "getPreferences", subscribe: true, resubscribe: false});
-		prefsOut.addContent("request timeout: " + getPrefsRequest.timeout + '<br>');
+		this.getPrefsRequest = new enyo.ServiceRequest({service: "luna://com.palm.systemservice", method: "getPreferences", subscribe: true, resubscribe: false});
+		prefsOut.addContent("request timeout: " + this.getPrefsRequest.timeout + '<br>');
         var getPrefsParameters = {keys: ["showAlertsWhenLocked"]};
         console.log("getPreferences", getPrefsParameters);
-        getPrefsRequest.go(getPrefsParameters);
-        getPrefsRequest.response(handleGetPrefsResponse.bind(this));
-        getPrefsRequest.error(handleGetPrefsFailure.bind(this));
+        this.getPrefsRequest.go(getPrefsParameters);
+        this.getPrefsRequest.response(handleGetPrefsResponse.bind(this));
+        this.getPrefsRequest.error(handleGetPrefsFailure.bind(this));
         
         setInterval(function () {
     		var setPrefsRequest = new enyo.ServiceRequest({service: "luna://com.palm.systemservice", method: "setPreferences", subscribe: false, resubscribe: false});
@@ -132,31 +142,6 @@ enyo.kind({
         	subscriptions.$.prefsScroller.scrollToBottom();
         }
 	},
-	subscribeFindnetworks: function() {		
-		var findnetworksRequest = new enyo.ServiceRequest({service: "luna://com.palm.wifi", method: "findnetworks", subscribe: true, resubscribe: false});
-		this.$.findnetworksOut.addContent("request timeout: " + findnetworksRequest.timeout + '<br>');
-        var findnetworksParameters = {};
-        console.log("findnetworks", findnetworksParameters);
-        findnetworksRequest.go(findnetworksParameters);
-        findnetworksRequest.response(handleFindnetworksResponse.bind(this));
-        findnetworksRequest.error(handleFindnetworksFailure.bind(this));
-        
-        function handleFindnetworksResponse(inSender, inResponse) {
-        	console.log("handleFindnetworksResponse:", inResponse);
-        	if (inResponse.foundNetworks) {
-        		this.$.findnetworksOut.addContent(inResponse.foundNetworks.length + ' networks found<br>');
-        	} else {
-        		this.$.findnetworksOut.addContent(JSON.stringify(inResponse) + '<br>');
-        	}
-        	this.$.findnetworksScroller.scrollToBottom();
-        }
-        
-        function handleFindnetworksFailure(inSender, inResponse) {
-        	console.error("handleFindnetworksFailure", inResponse);
-        	this.$.findnetworksOut.addContent(JSON.stringify(inResponse) + '<br>');
-        	this.$.findnetworksScroller.scrollToBottom();
-        }
-	},
 	subscribeWatch: function () {
 		var subscriptions = this;
 		var watchOut = this.$.watchOut;
@@ -181,16 +166,26 @@ enyo.kind({
 		    }
 			]
 		});
-		putKindRequest.response(startFind.bind(this));
+		putKindRequest.response(deleteAll.bind(this));
 		putKindRequest.error(handlePutKindFailure.bind(this));
+		
+		function deleteAll(inSender, inResponse) {
+			subscriptions.deleteAllRequest = new enyo.ServiceRequest({service: "luna://com.palm.db", method: "del"});
+			subscriptions.deleteAllRequest.go({
+				query: {from: "org.webosports.app.testr.subscribething:1"},
+				purge: true
+			});
+			subscriptions.deleteAllRequest.response(startFind.bind(this));
+			subscriptions.deleteAllRequest.error(handlePutKindFailure.bind(this));
+		}
         
         function startFind(inSender, inResponse) {
-    		var watchRequest = new enyo.ServiceRequest({service: "luna://com.palm.db", method: "find", subscribe: true, resubscribe: false});
+    		subscriptions.watchRequest = new enyo.ServiceRequest({service: "luna://com.palm.db", method: "find", subscribe: true, resubscribe: false});
             var watchParameters = {query: {from: "org.webosports.app.testr.subscribething:1"}, watch: true, count: true};
             console.log("getPreferences", watchParameters);
-            watchRequest.go(watchParameters);
-            watchRequest.response(handleWatchResponse.bind(this));
-            watchRequest.error(handleWatchFailure.bind(this));            
+            subscriptions.watchRequest.go(watchParameters);
+            subscriptions.watchRequest.response(handleWatchResponse.bind(this));
+            subscriptions.watchRequest.error(handleWatchFailure.bind(this));            
        }
 		
         function handlePutKindFailure(inSender, inResponse) {
@@ -239,5 +234,31 @@ enyo.kind({
         	watchOut.addContent("put fail: " + JSON.stringify(inResponse) + '<br><hr>');
         	subscriptions.$.watchScroller.scrollToBottom();
         }
-	}
+	},
+	
+	subscribeGeo: function() {
+		this.$.geoService.send({});
+    },
+    geoResponse: function (inSender, inEvent) {
+    	this.log(inEvent);
+    	this.$.geoOut.addContent($L("position returned: ") + JSON.stringify(inEvent.data, 
+				["altitude", "heading", "horizAccuracy", "latitude", "longitude", "timestamp", "velocity", "vertAccuracy"], 1) + '<br>');
+    	this.$.geoScroller.scrollToBottom();    	
+    },
+    geoError: function (inSender, inEvent) {
+    	this.log(inEvent.data);
+		var msg = "errorCode: " + inEvent.data.errorCode + "<br>" + 
+				"errorText: " + inEvent.data.errorText;
+        if (this.errorCodes[inEvent.data.errorCode]) {
+        	msg = this.errorCodes[inEvent.data.errorCode] + "<br>" + msg;
+        }
+        this.$.geoOut.addContent(msg + '<br>');
+    	this.$.geoScroller.scrollToBottom();    	
+    },
+	errorCodes: ["Success", "Timeout", "Position_Unavailable", "Unknown", 
+	             "GPS_Permanent_Error - No GPS fix but can still get the cell and Wifi fixes. A TouchPad without GPS returns this error.", 
+	             "LocationServiceOFF - No Location source available. Both Google and GPS are off.", 
+	             "Permission Denied - The user has not accepted the terms of use for the Google Location Service, or the Google Service is off.", 
+	             "The application already has a pending message ", 
+	             "The application has been temporarily blacklisted. (The user is not allowing this application to use this service.)"]
 });

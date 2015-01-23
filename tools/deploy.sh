@@ -27,12 +27,14 @@ fi
 while [ "$1" != "" ]; do
     case $1 in
         -w | --webos )
+            cp "$SRC"/receiver.html "$DEST"
             cp "$SRC"/appinfo.json "$DEST"
             
             # package it up
             palm-package "$DEST"
             ;;
         -i | --install )
+            cp "$SRC"/receiver.html "$DEST"
             cp "$SRC"/appinfo.json "$DEST"
             
             # install
