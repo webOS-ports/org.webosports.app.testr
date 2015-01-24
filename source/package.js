@@ -4,15 +4,12 @@ enyo.depends(
 	//"Theme.less",	// uncomment this line, and follow the steps described in Theme.less
 	"$lib/webos-lib",
 	"$lib/more-arrangers",
+	// CSS/LESS style files
+	"style",
+	// Model and data definitions
+	"data",
+	// View kind definitions
+	"views",
 	//Main App
-	"App.css",
-	"App.js",
-	//Test Panels
-	"Html5Audio.js",
-	"Telephony.js",
-	"Windowing.js",
-	"Receiver.js",
-	"Subscriptions.js",
-	"Notifications.js",
-	"Geolocation.js"
+	"App.js"
 );

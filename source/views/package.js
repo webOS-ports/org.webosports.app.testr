@@ -5,5 +5,6 @@ enyo.depends(
 	"Subscriptions.js",
 	"Telephony.js",
 	"Windowing.js",
-	"testr.js"
+	"testr.js",
+	"Receiver.js"
 );
