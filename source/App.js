@@ -128,7 +128,7 @@ enyo.kind({
 	reflow: function(inSender) {
 		this.inherited(arguments);
 		if(enyo.Panels.isScreenNarrow()) {
-			this.$.AppPanels.setArrangerKind("CoreNaviArranger");
+			this.$.AppPanels.setArrangerKind("CollapsingArranger");
 			this.$.AppPanels.setDraggable(false);
 			this.$.AppPanels.$.ContentPanels.addStyles("box-shadow: 0");
 		}

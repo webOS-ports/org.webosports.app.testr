@@ -74,15 +74,17 @@ enyo.kind({
 	},
 	singleLocationSuccess: function (inSender, inEvent) {
 		this.log(inEvent);
-		this.$.singleOut.setContent($L("position returned: ") + JSON.stringify(inEvent.data, 
+		this.$.singleOut.setContent($L("position returned: ") + JSON.stringify(inEvent.data || inEvent, 
 				["altitude", "heading", "horizAccuracy", "latitude", "longitude", "timestamp", "velocity", "vertAccuracy"], 1));
 	},
 	singleLocationFail: function (inSender, inEvent) {
 		this.log(inEvent);
-		var msg = "errorCode: " + inEvent.data.errorCode + "<br>" + 
-				"errorText: " + inEvent.data.errorText;
-		if (this.errorCodes[inEvent.data.errorCode]) {
-			msg = this.errorCodes[inEvent.data.errorCode] + "<br>" + msg;
+		var errorCode = inEvent.data ? inEvent.data.errorCode : inEvent.errorCode;
+		var errorText = inEvent.data ? inEvent.data.errorText : inEvent.errorText;
+		var msg = "errorCode: " + errorCode + "<br>" + 
+				"errorText: " + errorText;
+		if (this.errorCodes[errorCode]) {
+			msg = this.errorCodes[errorCode] + "<br>" + msg;
 		}
 		this.$.singleOut.setContent(msg);
 	},
