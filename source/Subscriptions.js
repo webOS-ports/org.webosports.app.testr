@@ -10,7 +10,7 @@
  * This should trigger the NotificationResponse.  When a NotificationResponse is received, the test issues another find. 
  * Thus, if/when the NotificationResponse is not received, the cycle is broken and no more objects are put.
  * 
- * subscribeGeo() subscribes to geolocation updates using PalmService
+ * subscribeGeo() subscribes to geolocation updates using LunaService
  */
 
 enyo.kind({
@@ -78,7 +78,7 @@ enyo.kind({
 	    },
 	    {
 	    	name: "geoService",
-	    	kind: "enyo.PalmService",
+	    	kind: "enyo.LunaService",
 	    	service: "palm://com.palm.location",
 	    	method: "startTracking",
 	    	subscribe: true,
@@ -241,14 +241,14 @@ enyo.kind({
     },
     geoResponse: function (inSender, inEvent) {
     	this.log(inEvent);
-    	this.$.geoOut.addContent($L("position returned: ") + JSON.stringify(inEvent.data || inEvent, 
+    	this.$.geoOut.addContent($L("position returned: ") + JSON.stringify(inEvent, 
 				["altitude", "heading", "horizAccuracy", "latitude", "longitude", "timestamp", "velocity", "vertAccuracy"], 1) + '<br>');
     	this.$.geoScroller.scrollToBottom();    	
     },
     geoError: function (inSender, inEvent) {
-    	this.log(inEvent.data);
-		var errorCode = inEvent.data ? inEvent.data.errorCode : inEvent.errorCode;
-		var errorText = inEvent.data ? inEvent.data.errorText : inEvent.errorText;
+    	this.error(inEvent);
+		var errorCode = inEvent.errorCode;
+		var errorText = inEvent.errorText;
 		var msg = "errorCode: " + errorCode + "<br>" + 
 				"errorText: " + errorText;
         if (this.errorCodes[errorCode]) {
