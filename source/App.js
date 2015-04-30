@@ -5,7 +5,7 @@ enyo.kind({
 	handlers: {
 		onmousedown: "pressed",
 		ondragstart: "released",
-		onmouseup: "released",
+		onmouseup: "released"
 	},
 	published: {
 		icon: "",
@@ -13,7 +13,7 @@ enyo.kind({
 	},
 	components:[
 		{name: "ItemIcon", kind: "Image", style: "height: 100%"},
-		{name: "ItemTitle", style: "padding-left: 10px;"},
+		{name: "ItemTitle", style: "padding-left: 10px;"}
 	],
 	create: function() {
 		this.inherited(arguments);
@@ -67,8 +67,9 @@ enyo.kind({
 				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},
 				{kind: "ListItem", icon: "icon.png", title: "PalmBus Subscriptions", ontap: "openSubscriptions"},
 				{kind: "ListItem", icon: "icon.png", title: "Notifications", ontap: "openNotifications"},
-				{kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"}
-			]},
+				{kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"},
+				{kind: "ListItem", icon: "icon.png", title: "Responsive Images", ontap: "openResponsiveImg"}
+			]}
 		]},
 		{name: "ContentPanels",
 		kind: "Panels",
@@ -82,8 +83,9 @@ enyo.kind({
 			{kind: "Windowing"},
 			{kind: "Subscriptions"},
 			{kind: "Notifications"},
-			{kind: "Geolocation"}
-		]},
+			{kind: "Geolocation"},
+			{kind: "ResponsiveImg"}
+		]}
 	],
 	openPanel: function(index) {
 		this.$.ContentPanels.setIndex(index);
@@ -108,6 +110,9 @@ enyo.kind({
 	},
 	openGeolocation: function (inSender, inEvent) {
 		this.openPanel(6);
+	},
+	openResponsiveImg: function (inSender, inEvent) {
+		this.openPanel(7);
 	}
 });
 
@@ -120,7 +125,7 @@ enyo.kind({
 		onbackbutton: "handleBackGesture",
 		onCoreNaviDragStart: "handleCoreNaviDragStart",
 		onCoreNaviDrag: "handleCoreNaviDrag",
-		onCoreNaviDragFinish: "handleCoreNaviDragFinish",},
+		onCoreNaviDragFinish: "handleCoreNaviDragFinish"},
 		{name: "AppPanels", kind: "AppPanels", fit: true},
 		{kind: "CoreNavi", fingerTracking: true}
 	],
@@ -139,16 +144,19 @@ enyo.kind({
 		}
 	},
 	handleBackGesture: function(inSender, inEvent) {
-		this.$.AppPanels.setIndex(0);
+		if (enyo.Panels.isScreenNarrow() && this.$.AppPanels.getIndex() > 0) {
+			this.$.AppPanels.setIndex(0);
+			inEvent.preventDefault();   // prevent minimizing card
+		}
 	},
 	handleCoreNaviDragStart: function(inSender, inEvent) {
-		this.$.AppPanels.dragstartTransition(this.$.AppPanels.draggable == false ? this.reverseDrag(inEvent) : inEvent);
+		this.$.AppPanels.dragstartTransition(!this.$.AppPanels.draggable ? this.reverseDrag(inEvent) : inEvent);
 	},
 	handleCoreNaviDrag: function(inSender, inEvent) {
-		this.$.AppPanels.dragTransition(this.$.AppPanels.draggable == false ? this.reverseDrag(inEvent) : inEvent);
+		this.$.AppPanels.dragTransition(!this.$.AppPanels.draggable ? this.reverseDrag(inEvent) : inEvent);
 	},
 	handleCoreNaviDragFinish: function(inSender, inEvent) {
-		this.$.AppPanels.dragfinishTransition(this.$.AppPanels.draggable == false ? this.reverseDrag(inEvent) : inEvent);
+		this.$.AppPanels.dragfinishTransition(!this.$.AppPanels.draggable ? this.reverseDrag(inEvent) : inEvent);
 	},
 	//Utility Functions
 	reverseDrag: function(inEvent) {

@@ -1,4 +1,4 @@
-/* Geolocation.js - panel for manual tests of LuneOS/webOS geolocation API
+/* Geolocation.js - panel for manual tests of LuneOS/webOS geolocation API & HTML5 geolocation API
  * 
  */
 
@@ -46,9 +46,34 @@ enyo.kind({
 					    ]}
 					]},
 					{kind: "onyx.Groupbox", style: "margin-top: 1rem;", components: [
-						{kind: "onyx.Button", style: "width: 100%", content: $L("getCurrentPosition"), ontap: "singleLocation"},
+						{kind: "onyx.Button", style: "width: 100%", content: $L("PalmBus (priv.) getCurrentPosition"), ontap: "singleLocation"},
 						{name: "singleOut", content: " &nbsp; ", allowHtml: true, style: "padding: 5px; color: white"}
 					]}
+				]},
+				{tag: "hr"},
+				{style: "padding: 35px 10% 35px 10%;", components: [
+				    {kind: "FittableColumns", components: [
+				        {content: $L("High accuracy"), fit: true, style: "color: white; line-height: 2rem;"},
+						{name: "highAccuracyTgl", kind: "onyx.ToggleButton"}
+					]},
+				    {kind: "FittableColumns", style: "margin-top: 1rem;", components: [
+      				        {content: $L("Max age: "), style: "color: white; line-height: 2rem;"},
+      					    {kind: "onyx.InputDecorator", style: "margin-left: 1rem;", components: [
+       				            {name: "html5AgeInpt", kind: "onyx.Input", type: "number", value: "0", attributes: {min: "0", step: "1"}, style: "width: 5rem;"}
+       				        ]},
+      				        {content: $L("sec."), style: "color: white; line-height: 2rem; margin-left: 1rem;"}
+   				    ]},
+				    {kind: "FittableColumns", style: "margin-top: 1rem;", components: [
+     				        {content: $L("Timeout: "), style: "color: white; line-height: 2rem;"},
+     					    {kind: "onyx.InputDecorator", style: "margin-left: 1rem;", components: [
+      				            {name: "timeout", kind: "onyx.Input", type: "number", value: "0", attributes: {min: "0", step: "1"}, style: "width: 5rem;"}
+      				        ]},
+     				        {content: $L("sec."), style: "color: white; line-height: 2rem; margin-left: 1rem;"}
+  				    ]},
+   					{kind: "onyx.Groupbox", style: "margin-top: 1rem;", components: [
+ 						{kind: "onyx.Button", style: "width: 100%", content: $L("HTML5 getCurrentPosition"), ontap: "html5CurrentLocation"},
+ 						{name: "html5Out", content: " \xa0 ", allowHtml: true, style: "padding: 5px; color: white"}
+ 					]}
 				]}
 			]
 		},
@@ -66,7 +91,7 @@ enyo.kind({
 	],
 		
 	singleLocation: function (inSender, inEvent) {
-		this.$.singleOut.setContent($L("requesting postion..."));
+		this.$.singleOut.setContent($L("requesting position..."));
 		this.log("accuracy: ", typeof this.$.accuracyPckr.getSelected().value, this.$.accuracyPckr.getSelected().value,
 				"   max age: ", typeof parseInt(this.$.ageInpt.getValue(), 10), parseInt(this.$.ageInpt.getValue(), 10),
 				"   response time: ", typeof this.$.responseTimePckr.getSelected().value, this.$.responseTimePckr.getSelected().value);
@@ -93,5 +118,41 @@ enyo.kind({
 	             "LocationServiceOFF - No Location source available. Both Google and GPS are off.", 
 	             "Permission Denied - The user has not accepted the terms of use for the Google Location Service, or the Google Service is off.", 
 	             "The application already has a pending message ", 
-	             "The application has been temporarily blacklisted. (The user is not allowing this application to use this service.)"]
+	             "The application has been temporarily blacklisted. (The user is not allowing this application to use this service.)"],
+
+     html5CurrentLocation: function (inSender, inEvent) {
+    	 var panel = this;
+    	 var options = {
+    		 enableHighAccuracy: this.$.highAccuracyTgl.get("value"),
+    		 maximumAge: Number(this.$.html5AgeInpt.get("value"), 10) * 1000
+    	 };
+    	 if (this.$.timeout.get("value") > 0) {
+    		 options.timeout = Number(this.$.timeout.get("value"), 10) * 1000;
+    	 }
+    	 this.log(options);
+    	 navigator.geolocation.getCurrentPosition(html5Success, html5Error, options);
+    	 panel.$.html5Out.setContent($L("requesting position..."));
+    	 
+         function html5Success (position) {
+        	 var msg = "latitude: " + position.coords.latitude + "°" +
+		 	 		"<br>longitude: " + position.coords.longitude + "°" +
+        	 		"<br>altitude: " + (typeof position.coords.altitude === "number" ? position.coords.altitude + " m" : position.coords.altitude) +
+	 				"<br>accuracy: " + position.coords.accuracy + " m" +
+        	 		"<br>heading: " + (typeof position.coords.heading === "number" ? position.coords.heading + "°" : position.coords.heading) +
+        		 	"<br>timestamp: " +  Date(position.timestamp);
+        	 panel.log(msg);
+//        	 panel.log("position:", position, position.coords, position.coords.latitude, position.coords.longitude);
+        	 panel.$.html5Out.setContent(msg);
+         }
+         
+		function html5Error(error) {
+			var msg = "code: " + error.code + "<br>" + "message: " + error.message;
+        	if (panel.html5ErrorCodes[error.code]) {
+        		msg = panel.html5ErrorCodes[error.code] + "<br>" + msg;
+        	}
+        	panel.error(msg);
+			panel.$.html5Out.setContent(msg);
+		}
+     },
+     html5ErrorCodes: ["", "PERMISSION_DENIED", "POSITION_UNAVAILABLE", "TIMEOUT"]
 });

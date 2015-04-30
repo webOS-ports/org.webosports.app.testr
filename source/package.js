@@ -15,5 +15,6 @@ enyo.depends(
 	"Receiver.js",
 	"Subscriptions.js",
 	"Notifications.js",
-	"Geolocation.js"
+	"Geolocation.js",
+	"ResponsiveImg.js"
 );
