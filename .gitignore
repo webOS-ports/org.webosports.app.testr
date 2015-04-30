@@ -1,4 +1,5 @@
 build
 deploy
 .project
+.idea
 org.webosports.app.testr*
