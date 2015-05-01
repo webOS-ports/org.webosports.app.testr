@@ -64,3 +64,21 @@
 	margin-right: 30%;
 	text-align: center;
 }
+
+
+code {
+	color: yellow;
+	font-size: 140%;
+}
+td, th {
+	border: solid 1px black;
+	padding: 1rem;
+	text-align: center;
+}
+
+.test-webkit-image-set {
+	background-image: url(../assets/nonresponsive-1x.png);
+	background-image: -webkit-image-set(url(../assets/responsive-1x.png) 1x, url(../assets/responsive-2x.png) 2x);
+	width:320px;
+	height:240px;
+}
