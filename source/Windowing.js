@@ -17,7 +17,7 @@ enyo.kind({
 			horizontal: "hidden",
 			fit: true,
 			components: [
-				{tag: "div", style: "padding: 35px 10% 35px 10%;", components: [
+				{style: "margin-left: auto; margin-right: auto; max-width: 35em; padding: 1rem;", components: [
 					{kind: "onyx.Groupbox", components: [
 					    {kind: "onyx.GroupboxHeader", content: "window.open()"},
 						{components: [
@@ -27,7 +27,7 @@ enyo.kind({
 					]},
 
 				]},
-				{style: "padding: 35px 10% 35px 10%;", components: [
+				{style: "margin-left: auto; margin-right: auto; max-width: 35em; padding: 1rem;", components: [
 					{kind: "onyx.Groupbox", components: [
 					    {kind: "onyx.GroupboxHeader", content: "window.postMessage()"},
 						{components: [
