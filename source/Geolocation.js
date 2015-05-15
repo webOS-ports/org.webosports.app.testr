@@ -15,7 +15,7 @@ enyo.kind({
 			touch: true,
 			horizontal: "hidden",
 			components: [
-				{style: "padding: 35px 10% 35px 10%;", components: [
+				{style: "margin-left: auto; margin-right: auto; max-width: 35em; padding: 1rem;", components: [
 				    {kind: "FittableColumns", components: [
    				        {content: $L("Accuracy: "), style: "color: white; line-height: 2.5rem;"},
 					    {kind: "onyx.PickerDecorator", style: "margin-left: 1rem;", components: [
@@ -51,7 +51,7 @@ enyo.kind({
 					]}
 				]},
 				{tag: "hr"},
-				{style: "padding: 35px 10% 35px 10%;", components: [
+				{style: "margin-left: auto; margin-right: auto; max-width: 35em; padding: 1rem;", components: [
 				    {kind: "FittableColumns", components: [
 				        {content: $L("High accuracy"), fit: true, style: "color: white; line-height: 2rem;"},
 						{name: "highAccuracyTgl", kind: "onyx.ToggleButton"}

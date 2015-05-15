@@ -27,16 +27,10 @@ fi
 while [ "$1" != "" ]; do
     case $1 in
         -w | --webos )
-            cp "$SRC"/receiver.html "$DEST"
-            cp "$SRC"/appinfo.json "$DEST"
-            
             # package it up
-            palm-package "$DEST"
+            palm-package "$DEST"  && palm-install org.webosports.app.testr_*_all.ipk && palm-launch org.webosports.app.testr
             ;;
         -i | --install )
-            cp "$SRC"/receiver.html "$DEST"
-            cp "$SRC"/appinfo.json "$DEST"
-            
             # install
             adb push "$DEST" /usr/palm/applications/org.webosports.app.testr
             adb shell systemctl restart luna-next
