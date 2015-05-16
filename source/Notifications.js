@@ -4,6 +4,7 @@ enyo.kind({
 	palm: false,
 	currentNotificationId: 0,
 	dashboardCount: 0,
+	systemPopupCount: 0,
 	components:[
 		{kind: "Signals", ondeviceready: "deviceready"},
 		{
@@ -44,6 +45,19 @@ enyo.kind({
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 104px height dash", ontap: "createDashboardNotificationPixel"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 11 gridunit height dash", ontap: "createDashboardNotificationGridunit"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add clickableWhenLocked default height dash", ontap: "createDashboardNotificationClickableWhenLocked"}
+						]}
+					]},
+
+					{kind: "onyx.Groupbox", components: [
+						{kind: "onyx.GroupboxHeader", content: "System Popups"},
+						{components: [
+							{content: "Should open a window independent of cards." +
+								" Tapping the Home button should dismiss it." +
+								" Going to card mode should not dismiss it." +
+								" If another system popup is displayed, should be displayed after the other one closes.",
+								style: "padding: 5px; color: white"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Create system popup 160px tall", ontap: "createSystemPopupPixel"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Create system popup 16 gridunits tall", ontap: "createSystemPopupGridunit"},
 						]}
 					]}
 				]}
@@ -99,5 +113,16 @@ enyo.kind({
 		++this.dashboardCount;
 		this.log("dashboard.html", this.dashboardCount);
 		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard clickableWhenLocked", 'attributes={"window":"dashboard","clickableWhenLocked":true}');
+	},
+
+	createSystemPopupPixel: function() {
+		++this.systemPopupCount;
+		this.log();
+		window.open("systemPopup.html?count="+this.systemPopupCount, "Testr System Popup Pixel", 'height=160, attributes={"window":"popupalert"}');
+	},
+	createSystemPopupGridunit: function() {
+		++this.systemPopupCount;
+		this.log();
+		window.open("systemPopup.html?count="+this.systemPopupCount, "Testr System Popup Gridunit", 'height=16, attributes={"window":"popupalert","metrics":"units"}');
 	}
 });

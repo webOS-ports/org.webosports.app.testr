@@ -6,6 +6,7 @@
     "./index.html",
     "./receiver.html",
     "./dashboard.html",
+    "./systemPopup.html",
     "./assets",
     "./appinfo.json"
   ],
