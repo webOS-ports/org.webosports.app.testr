@@ -12,6 +12,9 @@
   ],
   "libs": [
     "./lib/onyx",
-    "./lib/layout"
+    "./lib/layout",
+    "./lib/more-arrangers",
+    "./lib/enyo-webos",
+    "./lib/webos-lib"
   ]
 }
