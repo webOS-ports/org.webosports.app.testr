@@ -18,5 +18,7 @@ enyo.depends(
 	"Geolocation.js",
 	"ResponsiveImg.js",
 	// dashboard
-	"Dashboard.js"
+	"Dashboard.js",
+	// system popup
+	"SystemPopup.js"
 );

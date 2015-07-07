@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Testr System Popup</title>
+    <link rel="shortcut icon" href="icon.png"/>
+    <!-- -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!-- css -->
+    <link href="build/enyo.css" rel="stylesheet"/>
+    <link href="build/app.css" rel="stylesheet"/>
+    <!-- js -->
+    <script src="build/enyo.js"></script>
+    <script src="build/app.js"></script>
+</head>
+<body class="enyo-unselectable">
+<script type="text/javascript">
+    enyo.ready(function () {
+        if (window.location.search) {
+            var fields = window.location.search.slice(1).split('&');
+            for (var i = 0, field; field = fields[i]; i++) {
+                fields[i] = field.split('=');
+            }
+            for (var i = 0, field; field = fields[i]; i++) {
+                if (field[0] === "count") {
+                    var count = field[1];
+                }
+            }
+        }
+        new SystemPopup({count: count}).renderInto(document.body);
+    });
+</script>
+</body>
+</html>

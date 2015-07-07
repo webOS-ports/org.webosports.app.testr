@@ -6,11 +6,15 @@
     "./index.html",
     "./receiver.html",
     "./dashboard.html",
+    "./systemPopup.html",
     "./assets",
     "./appinfo.json"
   ],
   "libs": [
     "./lib/onyx",
-    "./lib/layout"
+    "./lib/layout",
+    "./lib/more-arrangers",
+    "./lib/enyo-webos",
+    "./lib/webos-lib"
   ]
 }
