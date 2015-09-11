@@ -61,7 +61,7 @@ enyo.kind({
 			fit: true,
 			touch: true,
 			components:[
-				{kind: "onyx.Toolbar", classes: "list-header", content: "Test cases"},
+				{kind: "onyx.Toolbar", classes: "list-header", content: "Test groups"},
 				{kind: "ListItem", icon: "icon.png", title: "HTML5 Audio", ontap: "openHtml5Audio"},
 				{kind: "ListItem", icon: "icon.png", title: "Telephony", ontap: "openTelephony"},
 				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},

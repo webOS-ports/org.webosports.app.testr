@@ -1,6 +1,6 @@
 enyo.kind({
     name: "SystemPopup",
-    style: "color:white;",
+    style: "color:white; background-color:black;",
     handlers: {
         ontap: "handleTap"
     },

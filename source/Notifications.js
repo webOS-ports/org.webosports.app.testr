@@ -3,8 +3,10 @@ enyo.kind({
 	layoutKind: "FittableRowsLayout",
 	palm: false,
 	currentNotificationId: 0,
+	bannerCount: 0,
 	dashboardCount: 0,
 	systemPopupCount: 0,
+	html5Count: 0,
 	components:[
 		{kind: "Signals", ondeviceready: "deviceready"},
 		{
@@ -25,9 +27,13 @@ enyo.kind({
 					    {kind: "onyx.GroupboxHeader", content: "Banner notifications"},
 						{components: [
 							{content: "Should raise/close a transient banner notification, with alert sound." +
-								" Should not add an icon to the notification bar, nor create a persistent dashboard." +
-								" Dashboards should be closed, if open.", style: "padding: 5px; color: white"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Add", ontap: "createBannerNotification"},
+								" Dashboards should be closed, if open." +
+								" Tapping the banner should re-launch this app or maximize the card, if necessary." +
+								" Banner should be displayed for five seconds, unless another banner is queued.",
+								style: "padding: 5px; color: white"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Add with custom icon", ontap: "createBannerCustomIcon"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound", ontap: "createBannerCustomSound"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with no sound", ontap: "createBannerNoSound"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Remove", ontap: "removeBannerNotification"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Close all", ontap: "closeAllBannerNotifications"}
 						]}
@@ -42,7 +48,7 @@ enyo.kind({
 								" Tapping the dashboard should redisplay this card, if it has been dismissed.",
 								style: "padding: 5px; color: white"},
 							{kind: "onyx.Button", style: "width: 100%", content: "Add default height dash", ontap: "createDashboardNotification"},
-							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 104px height dash", ontap: "createDashboardNotificationPixel"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 104px (DIPs) height dash", ontap: "createDashboardNotificationPixel"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 11 gridunit height dash", ontap: "createDashboardNotificationGridunit"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add clickableWhenLocked default height dash", ontap: "createDashboardNotificationClickableWhenLocked"}
 						]}
@@ -52,12 +58,30 @@ enyo.kind({
 						{kind: "onyx.GroupboxHeader", content: "System Popups"},
 						{components: [
 							{content: "Should open a window independent of cards." +
-								" Tapping the Home button should dismiss it." +
+								" Pressing the Home button (on Touchpads) should dismiss it." +
 								" Going to card mode should not dismiss it." +
-								" If another system popup is displayed, should be displayed after the other one closes.",
+								" If another system popup is displayed, should be displayed after the first one closes.",
 								style: "padding: 5px; color: white"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Create system popup 160px tall", ontap: "createSystemPopupPixel"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Create system popup 160px (DIPs) tall", ontap: "createSystemPopupPixel"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Create system popup 16 gridunits tall", ontap: "createSystemPopupGridunit"},
+						]}
+					]},
+
+					{kind: "onyx.Groupbox", components: [
+						{kind: "onyx.GroupboxHeader", content: "HTML5 Non-persistent Notifications"},
+						{components: [
+							{content: " Should display title text, body text (if provided) & icon (if provided)." +
+									" Should disappear after a few seconds." +
+									" New notifications should immediately replace old ones from this app." +
+									" Tapping notification should maximize card & call click handler." +
+									" [Behaves like a Banner notification, with an optional second string.]",
+								style: "padding: 5px; color: white"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Title, Body, Icon & default sound", ontap: "createHTML5NotificationAll"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Title, Icon & default sound", ontap: "createHTML5NotificationTitleIcon"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Title & default sound only", ontap: "createHTML5NotificationTitleOnly"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Title only & silent", ontap: "createHTML5NotificationTitleOnlySilent"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Title only & custom sound", ontap: "createHTML5NotificationTitleOnlyCustomSound"},
+							{name: 'html5Out', content: " ", style: "padding: 5px; color: white"}
 						]}
 					]}
 				]}
@@ -74,12 +98,29 @@ enyo.kind({
 
 		this.palm = true;
 	},
-	createBannerNotification: function() {
+	createBannerCustomIcon: function() {
 		if (!this.palm)
 			return;
 
-		this.log();
-		this.currentNotificationId = PalmSystem.addBannerMessage("Testr banner message", '{ }', "assets/Contacts-favorites-star-blue.png", "alerts");
+		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
+		this.log(relaunchParamJson);
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with star icon " + this.bannerCount, relaunchParamJson, "assets/Contacts-favorites-star-blue.png", "alerts");
+	},
+	createBannerCustomSound: function() {
+		if (!this.palm)
+			return;
+
+		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
+		this.log(relaunchParamJson);
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound " + this.bannerCount, relaunchParamJson, undefined, "alerts", 'assets/tones_3beeps_otasp_done-ondemand.mp3');
+	},
+	createBannerNoSound: function() {
+		if (!this.palm)
+			return;
+
+		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
+		this.log(relaunchParamJson);
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with no sound " + this.bannerCount, relaunchParamJson);
 	},
 	removeBannerNotification: function() {
 		if (this.currentNotificationId === 0)
@@ -124,5 +165,72 @@ enyo.kind({
 		++this.systemPopupCount;
 		this.log();
 		window.open("systemPopup.html?count="+this.systemPopupCount, "Testr System Popup Gridunit", 'height=16, attributes={"window":"popupalert","metrics":"units"}');
+	},
+
+	createHTML5NotificationAll: function() {
+		++this.html5Count;
+		this.createHTML5NotificationGeneric("All Three Title " + this.html5Count, {
+			body: "Icon should be headphones",
+			icon: 'assets/headphones.png',
+			data: {html5Count: this.html5Count}
+		});
+	},
+	createHTML5NotificationTitleIcon: function() {
+		++this.html5Count;
+		this.createHTML5NotificationGeneric("Icon should be star " + this.html5Count, {
+			icon: 'assets/Contacts-favorites-star-blue.png',
+			data: {html5Count: this.html5Count}
+		});
+	},
+	createHTML5NotificationTitleOnly: function() {
+		++this.html5Count;
+		this.createHTML5NotificationGeneric("No body nor icon " + this.html5Count, {
+			data: {html5Count: this.html5Count}
+		});
+	},
+	createHTML5NotificationTitleOnlySilent: function () {
+		++this.html5Count;
+		this.createHTML5NotificationGeneric("Silent " + this.html5Count, {
+			silent: true,
+			data: {html5Count: this.html5Count}
+		});
+	},
+	createHTML5NotificationTitleOnlyCustomSound: function () {
+		++this.html5Count;
+		this.createHTML5NotificationGeneric("Custom sound " + this.html5Count, {
+			sound: 'assets/tones_3beeps_otasp_done-ondemand.mp3',
+			data: {html5Count: this.html5Count}
+		});
+	},
+	createHTML5NotificationGeneric: function(title, options) {
+		var panel = this;
+
+		if (! ('Notification' in window)) {
+			this.$.html5Out.set('content', "HTML5 Notification API not present");
+		} else if (Notification.permission === 'default') {
+			console.log("requesting Notification permission");
+			panel.$.html5Out.set('content', "requesting Notification permission");
+			Notification.requestPermission(notifyIfPermitted);
+		} else {   // Perm previously set, perhaps via manifest
+			notifyIfPermitted();
+		}
+
+		function notifyIfPermitted() {
+			console.log("Notification.permission:", Notification.permission);
+			panel.$.html5Out.set('content', "Notification.permission: " + Notification.permission);
+
+			if (Notification.permission === 'granted') {
+				options = options || {};
+				options.tag = 'Testr';
+				console.log("options:", options);
+				var notification = new Notification(title, options);
+				notification.addEventListener('click', notificationClicked);
+			}
+		}
+
+		function notificationClicked(evt) {
+			console.log("notification clicked:", evt);
+			panel.$.html5Out.set('content', "clicked: " + JSON.stringify(evt.target.data));
+		}
 	}
 });
