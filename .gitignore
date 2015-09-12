@@ -2,4 +2,5 @@ build
 deploy
 .project
 .idea
+.DS_Store
 org.webosports.app.testr*
