@@ -18,14 +18,16 @@ enyo.kind({
 			fit: true,
 			components: [
 				{tag: "div", style: "padding: 1rem;", components: [
-					{content: "Vector", style: 'font-size: larger; color: white;'},
+					{style: 'color: white;', content: "window.devicePixelRatio: " + window.devicePixelRatio},
+
+					{content: "Vector", style: 'margin-top: 1rem; font-size: larger; color: white;'},
 					{content: "The higher the DPI of the screen, the sharper the SVG images should look relative to the PNG.",
 							style: 'margin-bottom: 1rem; color: white;'},
 					{tag: 'table', style: 'background: white; border-collapse: collapse;', components: [
 						{tag: 'tr', components: [
 							{tag: 'th', content: "SVG img"},
 							{tag: 'th', content: "SVG background"},
-							{tag: 'th', content: "1x PNG [for ref.]"}
+							{tag: 'th', content: "Reference 1x&nbsp;PNG", allowHtml: true}
 						]},
 						{tag: 'tr', components: [
 							{tag: 'td', components: [
@@ -66,6 +68,13 @@ enyo.kind({
 							{content: "x descriptor - ok for fixed-size images", style: 'color: white; margin: 1rem 0;'},
 							{classes: 'test-webkit-image-set'}
 						]}
+					]},
+
+					{content: "Recommended syntax: w descriptor + hi-res fallback", style: 'margin-top: 1rem; font-size: larger; color: white;'},
+					{style: 'color: white; margin-top: 1rem;', components: [
+						{tag: 'code',
+							content: "{tag: 'img', attributes: {srcset: 'assets/graphic-320x240.png 320w, assets/graphic-640x480.png 640w', \
+							sizes:'320px', src: 'assets/graphic-640x480.png'}}"}
 					]}
 				]}
 			]

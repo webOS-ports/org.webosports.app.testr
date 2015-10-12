@@ -29,3 +29,9 @@ Install & run on connected webOS device:
 `tools/deploy.sh -w`
 
 To run as web app, load debug.html in a browser.
+
+
+## Live Demo
+
+To compare behavior under other browsers, 
+[surf to the GitHub Pages](https://webos-ports.github.io/org.webosports.app.testr/debug.html)
