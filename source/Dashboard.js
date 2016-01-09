@@ -14,7 +14,22 @@ enyo.kind({
                 {name: "notificationMessage", style: "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; margin-top: -2px;"},
                 {style: "font-size: 14px; margin-top: -2px;", content: "third line"},
                 {style: "font-size: 14px; margin-top: -2px;", content: "fourth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "fifth line"}
+                {style: "font-size: 14px; margin-top: -2px;", content: "fifth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "sixth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "seventh line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "eighth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "ninth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "tenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "eleventh line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "twelfth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "thirteenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "fourteenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "fifteenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "sixteenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "seventeenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "eighteenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "nineteenth line"},
+                {style: "font-size: 14px; margin-top: -2px;", content: "twentieth line"}
             ]}
         ]}
     ],
