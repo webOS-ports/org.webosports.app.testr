@@ -48,8 +48,8 @@ enyo.kind({
 								" Tapping the dashboard should redisplay this card, if it has been dismissed.",
 								style: "padding: 5px; color: white"},
 							{kind: "onyx.Button", style: "width: 100%", content: "Add default height dash", ontap: "createDashboardNotification"},
-							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 104px (DIPs) height dash", ontap: "createDashboardNotificationPixel"},
-							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 11 gridunit height dash", ontap: "createDashboardNotificationGridunit"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 180px (DIPs) height dash", ontap: "createDashboardNotificationPixel"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add 32 gridunit height dash", ontap: "createDashboardNotificationGridunit"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add clickableWhenLocked default height dash", ontap: "createDashboardNotificationClickableWhenLocked"}
 						]}
 					]},
@@ -143,12 +143,12 @@ enyo.kind({
 	createDashboardNotificationPixel: function() {
 		++this.dashboardCount;
 		this.log("dashboard.html", this.dashboardCount);
-		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard Pixel", 'height=104, attributes={"window":"dashboard"}');
+		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard Pixel", 'attributes={"window":"dashboard", "dashHeight":180}');
 	},
 	createDashboardNotificationGridunit: function() {
 		++this.dashboardCount;
 		this.log("dashboard.html", this.dashboardCount);
-		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard Gridunit", 'height=11, attributes={"window":"dashboard","metrics":"units"}');
+		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard Gridunit", 'attributes={"window":"dashboard","metrics":"units", "dashHeight":32}');
 	},
 	createDashboardNotificationClickableWhenLocked: function() {
 		++this.dashboardCount;
