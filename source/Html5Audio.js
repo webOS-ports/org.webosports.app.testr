@@ -58,10 +58,10 @@ enyo.kind({
 						{components: [
 							{content: "Clicking the button below will play a alarm audio sound in WAV-format to verify that HTML 5 Audio support is working correctly. If you don't hear anything the test has failed.", style: "padding: 5px; color: white"},
 							{name: "AudioPlayerWAV", kind: "testr.Audio", preload: false, src: "file:///usr/palm/sounds/alert.wav"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Play WAV", ontap: "playAudio(\"WAV\")"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Play WAV", ontap: "playAudioWAV"},
 							{content: "Clicking the button below will play a ringtone audio sound in MP3-format to verify that HTML 5 Audio support is working correctly. If you don't hear anything the test has failed.", style: "padding: 5px; color: white"},
 							{name: "AudioPlayerMP3", kind: "testr.Audio", preload: false, src: "file:///usr/palm/sounds/ringtone.mp3"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Play MP3", ontap: "playAudio"}
+							{kind: "onyx.Button", style: "width: 100%", content: "Play MP3", ontap: "playAudioMP3"}
 						]},
 					]},
 				]}
