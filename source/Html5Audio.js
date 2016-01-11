@@ -12,9 +12,11 @@ enyo.kind({
 		this.preloadChanged();
 	},
 	srcChanged: function() {
+		
 		var path = enyo.path.rewrite(this.src);
 		this.setAttribute("src", path);
-		this.setAttribute("type", "audio/wav");
+		//Type needs to be set based on the filetype. Assuming for now it's always wav or mp3, so last 3 chars should work (though a bit dirty)
+		this.setAttribute("type", "audio/"+path.substring(path.length-3));
 	},
 	preloadChanged: function() {
 		this.setAttribute("autobuffer", this.preload ? "autobuffer" : null);
@@ -54,9 +56,12 @@ enyo.kind({
 					{kind: "onyx.Groupbox", components: [
 					    {kind: "onyx.GroupboxHeader", content: "Sounds"},
 						{components: [
-							{content: "Clicking the button below will play a alarm audio sound to verify that HTML 5 Audio support is working correctly. If you don't hear anything the test has failed.", style: "padding: 5px; color: white"},
-							{name: "AudioPlayer", kind: "testr.Audio", preload: false, src: "file:///usr/palm/sounds/alert.wav"},
-							{kind: "onyx.Button", style: "width: 100%", content: "Play", ontap: "playAudio"}
+							{content: "Clicking the button below will play a alarm audio sound in WAV-format to verify that HTML 5 Audio support is working correctly. If you don't hear anything the test has failed.", style: "padding: 5px; color: white"},
+							{name: "AudioPlayerWAV", kind: "testr.Audio", preload: false, src: "file:///usr/palm/sounds/alert.wav"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Play WAV", ontap: "playAudio(\"WAV\")"},
+							{content: "Clicking the button below will play a ringtone audio sound in MP3-format to verify that HTML 5 Audio support is working correctly. If you don't hear anything the test has failed.", style: "padding: 5px; color: white"},
+							{name: "AudioPlayerMP3", kind: "testr.Audio", preload: false, src: "file:///usr/palm/sounds/ringtone.mp3"},
+							{kind: "onyx.Button", style: "width: 100%", content: "Play MP3", ontap: "playAudio"}
 						]},
 					]},
 				]}
@@ -72,7 +77,11 @@ enyo.kind({
 		this.inherited(arguments);
 		this.palm = true;
 	},
-	playAudio: function () {
-		this.$.AudioPlayer.play();
+	playAudioWAV: function () {
+		this.$.AudioPlayerWAV.play();
+	},
+	playAudioMP3: function () {
+		this.$.AudioPlayerMP3.play();
 	}
+
 });
