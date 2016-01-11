@@ -112,7 +112,7 @@ enyo.kind({
 
 		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
 		this.log(relaunchParamJson);
-		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound " + this.bannerCount, relaunchParamJson, undefined, "alerts", 'assets/tones_3beeps_otasp_done-ondemand.mp3');
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound " + this.bannerCount, relaunchParamJson, undefined, "alerts", 'file:///usr/palm/sounds/alert.wav');
 	},
 	createBannerNoSound: function() {
 		if (!this.palm)
