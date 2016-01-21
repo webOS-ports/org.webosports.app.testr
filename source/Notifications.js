@@ -26,7 +26,7 @@ enyo.kind({
 					{kind: "onyx.Groupbox", components: [
 					    {kind: "onyx.GroupboxHeader", content: "Banner notifications"},
 						{components: [
-							{content: "Should raise/close a transient banner notification, with alert sound." +
+							{content: "Should raise/close a transient banner notification, with alert sound & vibration." +
 								" Dashboards should be closed, if open." +
 								" Tapping the banner should re-launch this app or maximize the card, if necessary." +
 								" Banner should be displayed for five seconds, unless another banner is queued.",
@@ -83,9 +83,41 @@ enyo.kind({
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Title only & custom sound", ontap: "createHTML5NotificationTitleOnlyCustomSound"},
 							{name: 'html5Out', content: " ", style: "padding: 5px; color: white"}
 						]}
+					]},
+
+					{kind: "onyx.Groupbox", components: [
+						{kind: "onyx.GroupboxHeader", content: "Vibration API"},
+						{components: [
+							{content: "Should perceptibly vibrate the device", style: "padding: 5px; color: white"},
+							{kind: "onyx.Button", style: "width: 100%",                    content:  '"500" 0.2 sec', ontap: "vibrate500_2"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: '"1000" 0.4 sec', ontap: "vibrate1000_4"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content:  '"300" 0.6 sec', ontap: "vibrate300_6"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content:  'Named effect: ringtone', ontap: "vibrateNamed"},
+							{name: 'vibrateOut', content: " ", style: "padding: 5px; color: white"}
+						]}
 					]}
 				]}
 			]
+		},
+		{
+			name: "vibrateService",
+			kind: "LunaService",
+			service: "palm://com.palm.vibrate/",
+			method: "vibrate",
+			subscribe: false,
+			resubscribe: false,
+			onResponse: "vibrateSuccess",
+			onError: "vibrateFail"
+		},
+		{
+			name: "vibrateNamedService",
+			kind: "LunaService",
+			service: "palm://com.palm.vibrate/",
+			method: "vibrateNamedEffect",
+			subscribe: false,
+			resubscribe: false,
+			onResponse: "vibrateSuccess",
+			onError: "vibrateFail"
 		}
 	],
 	create: function(inSender, inEvent) {
@@ -232,5 +264,38 @@ enyo.kind({
 			console.log("notification clicked:", evt);
 			panel.$.html5Out.set('content', "clicked: " + JSON.stringify(evt.target.data));
 		}
+	},
+
+	vibrate500_2: function () {
+		this.$.vibrateService.send({
+			period: 500,   // ms [allegedly]
+			duration: 200   // ms
+		});
+	},
+	vibrate1000_4: function () {
+		this.$.vibrateService.send({
+			period: 1000,   // ms [allegedly]
+			duration: 400   // ms
+		});
+	},
+	vibrate300_6: function () {
+		this.$.vibrateService.send({
+			period: 300,   // ms [allegedly]
+			duration: 600   // ms
+		});
+	},
+	vibrateNamed: function () {
+		this.$.vibrateNamedService.send({
+			name: 'ringtone',
+			continous: false
+		});
+	},
+	vibrateSuccess: function (inSender, inRequest) {
+		this.log();
+		this.$.vibrateOut.set('content', " ");
+	},
+	vibrateFail: function (inSender, inErr) {
+		this.error(inErr.errorText);
+		this.$.vibrateOut.set('content', inErr.errorText || inErr.toString());
 	}
 });
