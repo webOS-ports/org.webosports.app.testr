@@ -32,7 +32,9 @@ enyo.kind({
 								" Banner should be displayed for five seconds, unless another banner is queued.",
 								style: "padding: 5px; color: white"},
 							{kind: "onyx.Button", style: "width: 100%", content: "Add with custom icon", ontap: "createBannerCustomIcon"},
-							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound", ontap: "createBannerCustomSound"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound file", ontap: "createBannerCustomSoundFile"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound file (full path)", ontap: "createBannerCustomSoundFileFullPath"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound class", ontap: "createBannerCustomSoundClass"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with no sound", ontap: "createBannerNoSound"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Remove", ontap: "removeBannerNotification"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Close all", ontap: "closeAllBannerNotifications"}
@@ -138,13 +140,29 @@ enyo.kind({
 		this.log(relaunchParamJson);
 		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with star icon " + this.bannerCount, relaunchParamJson, "assets/Contacts-favorites-star-blue.png", "alerts");
 	},
-	createBannerCustomSound: function() {
+	createBannerCustomSoundFile: function() {
 		if (!this.palm)
 			return;
 
 		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
 		this.log(relaunchParamJson);
-		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound " + this.bannerCount, relaunchParamJson, undefined, "alerts", 'file:///usr/palm/sounds/alert.wav');
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound file " + this.bannerCount, relaunchParamJson, undefined, undefined, "notification2.wav");
+	},
+	createBannerCustomSoundFileFullPath: function() {
+		if (!this.palm)
+			return;
+
+		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
+		this.log(relaunchParamJson);
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound file (full path) " + this.bannerCount, relaunchParamJson, undefined, undefined, "file:///usr/palm/sounds/alert.wav");
+	},
+	createBannerCustomSoundClass: function() {
+		if (!this.palm)
+			return;
+
+		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
+		this.log(relaunchParamJson);
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound class " + this.bannerCount, relaunchParamJson, undefined, "notifications");
 	},
 	createBannerNoSound: function() {
 		if (!this.palm)
