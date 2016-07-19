@@ -34,7 +34,8 @@ enyo.kind({
 							{kind: "onyx.Button", style: "width: 100%", content: "Add with custom icon", ontap: "createBannerCustomIcon"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound file", ontap: "createBannerCustomSoundFile"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound file (full path)", ontap: "createBannerCustomSoundFileFullPath"},
-							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound class", ontap: "createBannerCustomSoundClass"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound class (ringtones)", ontap: "createBannerCustomSoundClassRingtones"},
+							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with custom sound class (vibrate)", ontap: "createBannerCustomSoundClassVibrate"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Add with no sound", ontap: "createBannerNoSound"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Remove", ontap: "removeBannerNotification"},
 							{kind: "onyx.Button", style: "width: 100%; margin-top: 1rem;", content: "Close all", ontap: "closeAllBannerNotifications"}
@@ -146,7 +147,7 @@ enyo.kind({
 
 		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
 		this.log(relaunchParamJson);
-		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound file " + this.bannerCount, relaunchParamJson, undefined, undefined, "notification2.wav");
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound file " + this.bannerCount, relaunchParamJson, undefined, undefined, "phone.wav");
 	},
 	createBannerCustomSoundFileFullPath: function() {
 		if (!this.palm)
@@ -154,15 +155,23 @@ enyo.kind({
 
 		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
 		this.log(relaunchParamJson);
-		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound file (full path) " + this.bannerCount, relaunchParamJson, undefined, undefined, "file:///usr/palm/sounds/alert.wav");
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound file (full path) " + this.bannerCount, relaunchParamJson, undefined, undefined, "file:///usr/palm/sounds/notification.wav");
 	},
-	createBannerCustomSoundClass: function() {
+	createBannerCustomSoundClassRingtones: function() {
 		if (!this.palm)
 			return;
 
 		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
 		this.log(relaunchParamJson);
-		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound class " + this.bannerCount, relaunchParamJson, undefined, "notifications");
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound class (ringtones) " + this.bannerCount, relaunchParamJson, undefined, "ringtones");
+	},
+	createBannerCustomSoundClassVibrate: function() {
+		if (!this.palm)
+			return;
+
+		var relaunchParamJson = JSON.stringify({foo: ++this.bannerCount});
+		this.log(relaunchParamJson);
+		this.currentNotificationId = PalmSystem.addBannerMessage("Banner with custom sound class (vibrate) " + this.bannerCount, relaunchParamJson, undefined, "vibrate");
 	},
 	createBannerNoSound: function() {
 		if (!this.palm)
