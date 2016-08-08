@@ -8,8 +8,7 @@
     "./dashboard.html",
     "./systemPopup.html",
     "./assets",
-    "./appinfo.json",
-    "./notification2.wav"
+    "./appinfo.json"
   ],
   "libs": [
     "./lib/onyx",
