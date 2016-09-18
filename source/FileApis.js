@@ -29,7 +29,7 @@ enyo.kind({
                     {kind: "FittableColumns", style: "margin-top: 1rem;", components: [
                         {content: $L("Size: "), style: "color: white; line-height: 2rem;"},
                         {kind: "onyx.InputDecorator", style: "margin-left: 1rem;", components: [
-                            {name: "sizeInpt", kind: "onyx.Input", type: "number", value: "1000000", attributes: {min: "0", step: "1000"}, style: "width: 7rem;"}
+                            {name: "sizeInpt", kind: "onyx.Input", type: "number", value: "1000000", attributes: {min: "0", step: "1000000"}, style: "width: 11rem;"}
                         ]},
                         {content: $L("bytes"), style: "color: white; line-height: 2rem; margin-left: 1rem;"}
                     ]},
@@ -56,12 +56,10 @@ enyo.kind({
 
         function success(fileSystem) {
             console.log(fileSystem);
-            var msg = [];
-            if (fileSystem.name) {
-                msg.push(fileSystem.name);
-            }
+            var msg = ["sandbox filesystem returned:"];
+            msg.push("name: " + fileSystem.name);
             if (fileSystem.root) {
-                msg.push(fileSystem.root.fullPath);
+                msg.push("root: " + fileSystem.root.fullPath);
             }
             panel.$.webkitChromeOut.set('content',  msg.join('<br>'));
         }
