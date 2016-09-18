@@ -16,6 +16,7 @@ enyo.depends(
 	"Subscriptions.js",
 	"Notifications.js",
 	"Geolocation.js",
+	"FileApis.js",
 	"ResponsiveImg.js",
 	// dashboard
 	"Dashboard.js",
