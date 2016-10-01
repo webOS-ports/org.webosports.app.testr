@@ -48,17 +48,18 @@ enyo.kind({
 
     chromeSandboxWriteFile: function (inSender, inEvent) {
         var panel = this;
-        var requestedBytes;
+        var targetBytes;
         try {
-            requestedBytes = parseInt(this.$.sizeInpt.getValue(), 10);
-            this.log(typeof requestedBytes, requestedBytes);
+            targetBytes = parseInt(this.$.sizeInpt.getValue(), 10);
+            var requestedBytes = Math.round(targetBytes * 1.01);
             var msg = "requesting " + requestedBytes + " bytes persistent storage:";
+            this.log(msg);
             panel.$.webkitChromeOut.set('content', msg);
 
             navigator.webkitPersistentStorage.requestQuota(requestedBytes, gotQuota, fileSystemFail);
 
             // var permanence = this.$.permanencePckr.getSelected().value;
-            // this.log(typeof permanence, permanence, typeof requestedBytes, requestedBytes);
+            // this.log(typeof permanence, permanence, typeof targetBytes, targetBytes);
             // window.webkitRequestFileSystem(permanence, requestedBytes, success, fileSystemFail);
         } catch (err) {
             this.error(err);
@@ -68,7 +69,7 @@ enyo.kind({
         function gotQuota(grantedBytes) {
             console.log("got FileSystem quota:", grantedBytes);
             var msg = "granted " + grantedBytes + " bytes";
-            msg += "<br><br>requesting file system:"
+            msg += "<br><br>requesting file system:";
             panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + msg);
 
             window.webkitRequestFileSystem(window.PERSISTENT, grantedBytes, gotFileSystem, fileSystemFail);
@@ -110,7 +111,7 @@ enyo.kind({
                 var msg = "length " + fileWriter.length;
 
                 var strArr = [];
-                while ((strArr.length+1) * 100 <= requestedBytes) {
+                while ((strArr.length+1) * 100 <= targetBytes) {
                     strArr.push("........10........20........30........40........50........60........70........80........90......100\n");
                 }
                 var blob = new Blob(strArr, {type: "text/plain"});
@@ -202,7 +203,7 @@ enyo.kind({
             panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + panel.errorToMessage(fileError) + '<br>');
         }
     },
-    
+
     errorToMessage: function errorToMessage(error, fallbackMsg) {
         var msg = [];
         if (! error) {
