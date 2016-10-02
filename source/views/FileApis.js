@@ -36,6 +36,10 @@ enyo.kind({
                     {kind: "onyx.Groupbox", style: "margin-top: 1rem;", components: [
                         {kind: "onyx.Button", style: "width: 100%", content: $L("Chrome sandbox - write file"), ontap: "chromeSandboxWriteFile"},
                         {name: "webkitChromeOut", content: " &nbsp; ", allowHtml: true, style: "padding: 5px; color: white"}
+                    ]},
+                    {kind: "onyx.Groupbox", style: "margin-top: 1rem;", components: [
+                        {kind: "onyx.Button", style: "width: 100%", content: $L("Chrome sandbox - delete all"), ontap: "chromeSandboxDeleteAll"},
+                        {name: "sandboxDeleteOut", content: " &nbsp; ", allowHtml: true, style: "padding: 5px; color: white"}
                     ]}
                 ]}
             ]
@@ -44,27 +48,28 @@ enyo.kind({
 
     chromeSandboxWriteFile: function (inSender, inEvent) {
         var panel = this;
-        var requestedBytes;
+        var targetBytes;
         try {
-            requestedBytes = parseInt(this.$.sizeInpt.getValue(), 10);
-            this.log(typeof requestedBytes, requestedBytes);
+            targetBytes = parseInt(this.$.sizeInpt.getValue(), 10);
+            var requestedBytes = Math.round(targetBytes * 1.01);
             var msg = "requesting " + requestedBytes + " bytes persistent storage:";
+            this.log(msg);
             panel.$.webkitChromeOut.set('content', msg);
 
             navigator.webkitPersistentStorage.requestQuota(requestedBytes, gotQuota, fileSystemFail);
 
             // var permanence = this.$.permanencePckr.getSelected().value;
-            // this.log(typeof permanence, permanence, typeof requestedBytes, requestedBytes);
+            // this.log(typeof permanence, permanence, typeof targetBytes, targetBytes);
             // window.webkitRequestFileSystem(permanence, requestedBytes, success, fileSystemFail);
         } catch (err) {
             this.error(err);
-            panel.$.webkitChromeOut.set('content',  errorToMessage(err));
+            panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + panel.errorToMessage(err));
         }
 
         function gotQuota(grantedBytes) {
             console.log("got FileSystem quota:", grantedBytes);
             var msg = "granted " + grantedBytes + " bytes";
-            msg += "<br><br>requesting file system:"
+            msg += "<br><br>requesting file system:";
             panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + msg);
 
             window.webkitRequestFileSystem(window.PERSISTENT, grantedBytes, gotFileSystem, fileSystemFail);
@@ -73,13 +78,10 @@ enyo.kind({
             console.log(fileSystem);
             var msg = [];
             msg.push("name: " + fileSystem.name);
-            if (fileSystem.root) {
-                msg.push("root: " + fileSystem.root.fullPath);
-            }
             msg.push("<br>getting directory:");
             panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + msg.join('<br>'));
 
-            fileSystem.root.getDirectory('test directory', {create: true}, gotDirectory, fileSystemFail);
+            fileSystem.root.getDirectory('Testr', {create: true}, gotDirectory, fileSystemFail);
         }
         function gotDirectory(dirEntry) {
             console.log(dirEntry);
@@ -87,7 +89,13 @@ enyo.kind({
             msg += "<br><br>getting file:"
             panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + msg);
 
-            var filePath = "test file.txt";
+            var filePath;
+            var appInfo = webos.fetchAppInfo();
+            if (appInfo && appInfo.id) {
+                filePath = appInfo.id + ".txt";
+            } else {
+                filePath = "unknown_id.txt";
+            }
             dirEntry.getFile(filePath, {create: true, exclusive: false}, gotFile, fileSystemFail);
         }
         function gotFile(fileEntry) {
@@ -103,7 +111,7 @@ enyo.kind({
                 var msg = "length " + fileWriter.length;
 
                 var strArr = [];
-                while ((strArr.length+1) * 100 <= requestedBytes) {
+                while ((strArr.length+1) * 100 <= targetBytes) {
                     strArr.push("........10........20........30........40........50........60........70........80........90......100\n");
                 }
                 var blob = new Blob(strArr, {type: "text/plain"});
@@ -129,57 +137,113 @@ enyo.kind({
 
         function fileSystemFail(fileError) {
             console.error(fileError);
-            panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + errorToMessage(fileError) + '<br>');
+            panel.$.webkitChromeOut.set('content', panel.$.webkitChromeOut.get('content') + '<br>' + panel.errorToMessage(fileError) + '<br>');
+        }
+    },
+
+    chromeSandboxDeleteAll: function (inSender, inEvent) {
+        var panel = this;
+        var dirReader;
+        var totalEntries = 0;
+        try {
+            var msg = "requesting filesystem:";
+            this.log(msg);
+            panel.$.sandboxDeleteOut.set('content', msg);
+
+            window.webkitRequestFileSystem(window.PERSISTENT, 1024, gotFileSystem, fileSystemFail);
+        } catch (err) {
+            this.error(err);
+            panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + panel.errorToMessage(err));
         }
 
-        function errorToMessage(error, fallbackMsg) {
+        function gotFileSystem(fileSystem) {
+            console.log(fileSystem);
             var msg = [];
-            if (! error) {
-                if (fallbackMsg) {
-                    return fallbackMsg;
-                } else {
-                    return Object.prototype.toString.call(error);
-                }
-            }
-            if (error.code) {
-                if (typeof error.code === 'number') {
-                    for (var propName in error) {
-                        if (propName !== 'code' && error[propName] === error.code) {
-                            msg.push(propName);
-                        }
-                    }
-                }
-                if (msg.length === 0) {
-                    msg.push(error.code);
-                }
-            }
-            if (error.message) {
-                msg.unshift(error.message);
-            }
-            if (error.name) {
-                msg.unshift(error.name);
-            }
+            msg.push("name: " + fileSystem.name);
+            msg.push("<br>reading root directory:");
+            panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + msg.join('<br>'));
 
-            if (error instanceof ProgressEvent) {
+            dirReader = fileSystem.root.createReader();
+            dirReader.readEntries(gotEntries, fileSystemFail);
+        }
+        function gotEntries(entries) {
+            console.log(entries);
+            totalEntries += entries.length;
+            var msg = [];
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
+                if (entry.isDirectory){
+                    console.log('recursively removing: ' + entry.fullPath);
+                    msg.push('recursively removing: ' + entry.fullPath);
+                    entry.removeRecursively(removedEntry, fileSystemFail);
+                }
+                else if (entry.isFile){
+                    console.log('removing: ' + entry.fullPath);
+                    msg.push('removing: ' + entry.fullPath);
+                    entry.remove(removedEntry, fileSystemFail);
+                }
+            }
+            panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + msg.join('<br>'));
+
+            if (entries.length > 0) {
+                dirReader.readEntries(gotEntries, fileSystemFail);
+            } else {
+                var msg2 = 'attempted removal of ' + totalEntries + ' entries';
+                panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + msg2);
+            }
+        }
+        function removedEntry() {
+            var msg = "entry removed";
+            console.log(msg);
+            panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + msg);
+        }
+
+        function fileSystemFail(fileError) {
+            console.error(fileError);
+            panel.$.sandboxDeleteOut.set('content', panel.$.sandboxDeleteOut.get('content') + '<br>' + panel.errorToMessage(fileError) + '<br>');
+        }
+    },
+
+    errorToMessage: function errorToMessage(error, fallbackMsg) {
+        var msg = [];
+        if (! error) {
+            if (fallbackMsg) {
+                return fallbackMsg;
+            } else {
+                return Object.prototype.toString.call(error);
+            }
+        }
+        if (error.message) {
+            msg.unshift(error.message);
+        }
+        if (error.name) {
+            msg.unshift(error.name);
+        }
+
+        if (error instanceof ProgressEvent) {
+            if (error.type === "error" && error.target.error) {
+                msg.push(errorToMessage(error.target.error));
+            } else {
                 msg.push("ProgressEvent");
                 msg.push("type: " + error.type);
                 msg.push("total: " + error.total);
                 msg.push("loaded: " + error.loaded);
             }
+        }
 
-            if (msg.length === 0) {
-                if (fallbackMsg) {
-                    msg.push(fallbackMsg);
-                } else {
-                    try {
-                        msg.push(JSON.stringify(error));
-                    } catch (e) {
-                        console.error(e);
-                    }
+        if (msg.length === 0) {
+            if (fallbackMsg) {
+                msg.push(fallbackMsg);
+            } else {
+                try {
+                    msg.push(JSON.stringify(error));
+                } catch (e) {
+                    console.error(e);
                 }
             }
-
-            return msg.join('<br>');
         }
+
+        return msg.join('<br>');
     }
+
 });
