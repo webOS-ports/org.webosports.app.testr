@@ -28,17 +28,6 @@ enyo.kind({
                     ]}
                 ]}
 			]
-		},
-		
-		{
-			name: "singleLocationService",
-			kind: "LunaService",
-			service: "palm://com.palm.location/",
-			method: "getCurrentPosition",
-			subscribe: false,
-			resubscribe: false,
-			onResponse: "singleLocationSuccess",
-			onError: "singleLocationFail"
 		}
 	],
 
