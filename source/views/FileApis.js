@@ -7,7 +7,8 @@ enyo.kind({
     layoutKind: "FittableRowsLayout",
     components: [
         { kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [
-            {fit: true, content: $L("File APIs")}
+            {fit: true, content: $L("File APIs")},
+            {content: $L("origin: ") + location.origin}
         ]},
         {
             fit: true,
