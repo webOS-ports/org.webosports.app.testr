@@ -10,7 +10,7 @@ enyo.kind({
 	components: [
 	    { kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [
 	        {fit: true, content: $L("Camera")},
-            {kind: "onyx.Button", content: $L("Activate camera"), ontap: "activateCamera"},
+            {kind: "onyx.Button", content: $L("Activate rear"), ontap: "activateCamera"},
             {kind: "onyx.Button", content: $L("Take photo"), ontap: "takePhoto"}
         ]},
 		{
@@ -33,9 +33,27 @@ enyo.kind({
 
 	create: function () {
 		this.inherited(arguments);
-        this.textOut("typeof navigator.mediaDevices: " + (typeof navigator.mediaDevices));
-        if (navigator.mediaDevices) {
-            this.textOut("typeof navigator.mediaDevices.getUserMedia: " + (typeof navigator.mediaDevices.getUserMedia));
+        var cameraPane = this;
+        if (! navigator.mediaDevices) {
+            this.textOut("typeof navigator.mediaDevices: " + (typeof navigator.mediaDevices));
+        }
+
+        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices().then(function (devices) {
+                devices.forEach(function(device) {
+                	cameraPane.log(JSON.stringify(device));
+                	if (device.deviceId !== 'default') {
+                		var msg = device.kind + ": " + device.label +
+                            " id=" + device.deviceId.slice(0,6) + "...";
+                		if (device.groupId) {
+                			msg += " groupId=" + device.groupId.slice(0,6) + "...";
+						}
+                        cameraPane.textOut(msg);
+                    }
+                });
+			}).catch(function (err) {
+				cameraPane.textOut(err);
+			})
         }
 	},
 
@@ -47,7 +65,7 @@ enyo.kind({
         }
         var cameraPane = this;
         var videoElem = this.$.video.hasNode();
-        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}, audio: false })
             .then(function(stream) {
                 cameraPane.textOut("stream: " + stream);
                 videoElem.srcObject = stream;
@@ -61,15 +79,17 @@ enyo.kind({
 		videoElem.addEventListener('canplay', function(ev){
             cameraPane.textOut("videoHeight="+videoElem.videoHeight + "   videoWidth="+videoElem.videoWidth);
             if (!streaming) {
-                cameraPane.height = videoElem.videoHeight / (videoElem.videoWidth / cameraPane.width);
-                cameraPane.textOut("height="+cameraPane.height + "   width="+cameraPane.width);
+                if (videoElem.videoWidth > 0) {
+                    cameraPane.height = videoElem.videoHeight / (videoElem.videoWidth / cameraPane.width);
+                    cameraPane.textOut("height=" + cameraPane.height + "   width=" + cameraPane.width);
 
-                cameraPane.$.video.applyStyle('height', cameraPane.height+'px');
-                cameraPane.$.video.applyStyle('width', cameraPane.width+'px');
-                cameraPane.$.canvas.applyStyle('height', cameraPane.height+'px');
-                cameraPane.$.canvas.applyStyle('width', cameraPane.width+'px');
-                cameraPane.$.photo.applyStyle('height', cameraPane.height+'px');
-                cameraPane.$.photo.applyStyle('width', cameraPane.width+'px');
+                    cameraPane.$.video.applyStyle('height', cameraPane.height + 'px');
+                    cameraPane.$.video.applyStyle('width', cameraPane.width + 'px');
+                    cameraPane.$.canvas.applyStyle('height', cameraPane.height + 'px');
+                    cameraPane.$.canvas.applyStyle('width', cameraPane.width + 'px');
+                    cameraPane.$.photo.applyStyle('height', cameraPane.height + 'px');
+                    cameraPane.$.photo.applyStyle('width', cameraPane.width + 'px');
+                }
                 streaming = true;
 
                 cameraPane.clearphoto();
