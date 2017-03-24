@@ -24,7 +24,7 @@ enyo.kind({
 					{name: 'canvas', id: 'canvas', tag: 'canvas'},
 					{name: 'photo', id:"photo", tag: 'img', attributes:{alt:"The screen capture will appear in this box."}},
                     {kind: "onyx.Groupbox", style: "margin-top: 1rem;", components: [
-                        {name: "videoTextOut", content: " &nbsp; ", allowHtml: true, style: "padding: 5px; color: white"}
+                        {name: "videoTextOut", content: " ", allowHtml: true, style: "padding: 5px; color: white"}
                     ]}
                 ]}
 			]
@@ -33,43 +33,43 @@ enyo.kind({
 
 	create: function () {
 		this.inherited(arguments);
-        var videoTextOut = this.$.videoTextOut;
-        videoTextOut.set('content', "typeof navigator.mediaDevices: " + (typeof navigator.mediaDevices));
+        this.textOut("typeof navigator.mediaDevices: " + (typeof navigator.mediaDevices));
         if (navigator.mediaDevices) {
-            videoTextOut.set('content', videoTextOut.get('content') + "<br>typeof navigator.mediaDevices.getUserMedia: " + (typeof navigator.mediaDevices.getUserMedia));
+            this.textOut("typeof navigator.mediaDevices.getUserMedia: " + (typeof navigator.mediaDevices.getUserMedia));
         }
 	},
 
     activateCamera: function (inSender, inEvent) {
 		this.log(navigator.mediaDevices);
 		if (! navigator.mediaDevices) {
-            this.notifyUser($L("No camera API (navigator.mediaDevices)"));
+            this.banner($L("No camera API (navigator.mediaDevices)"));
             return;
         }
+        var cameraPane = this;
         var videoElem = this.$.video.hasNode();
-        var videoTextOut = this.$.videoTextOut;
         navigator.mediaDevices.getUserMedia({ video: true, audio: false })
             .then(function(stream) {
-                videoTextOut.set('content', videoTextOut.get('content') + '<br>' + "stream: " + stream);
+                cameraPane.textOut("stream: " + stream);
                 videoElem.srcObject = stream;
                 videoElem.play();
             })
             .catch(function(err) {
-                console.log("An error occured! " + err);
-                videoTextOut.set('content', videoTextOut.get('content') + '<br>' + "An error occured! " + err);
+                cameraPane.textOut("An error occured! " + err);
             });
 
 		var streaming = false;
-        var canvasElem = this.$.canvas.hasNode();
-        var cameraPane = this;
 		videoElem.addEventListener('canplay', function(ev){
+            cameraPane.textOut("videoHeight="+videoElem.videoHeight + "   videoWidth="+videoElem.videoWidth);
             if (!streaming) {
-                cameraPane.height = videoElem.videoHeight / (videoElem.videoWidth/cameraPane.width);
+                cameraPane.height = videoElem.videoHeight / (videoElem.videoWidth / cameraPane.width);
+                cameraPane.textOut("height="+cameraPane.height + "   width="+cameraPane.width);
 
-                videoElem.setAttribute('width', cameraPane.width);
-                videoElem.setAttribute('height', cameraPane.height);
-                canvasElem.setAttribute('width', cameraPane.width);
-                canvasElem.setAttribute('height', cameraPane.height);
+                cameraPane.$.video.applyStyle('height', cameraPane.height+'px');
+                cameraPane.$.video.applyStyle('width', cameraPane.width+'px');
+                cameraPane.$.canvas.applyStyle('height', cameraPane.height+'px');
+                cameraPane.$.canvas.applyStyle('width', cameraPane.width+'px');
+                cameraPane.$.photo.applyStyle('height', cameraPane.height+'px');
+                cameraPane.$.photo.applyStyle('width', cameraPane.width+'px');
                 streaming = true;
 
                 cameraPane.clearphoto();
@@ -88,7 +88,6 @@ enyo.kind({
 
     takePhoto: function (inSender, inEvent) {
 		this.log();
-        var videoTextOut = this.$.videoTextOut;
         var context = this.$.canvas.hasNode().getContext('2d');
         if (this.width && this.height) {
             this.$.canvas.hasNode().width = this.width;
@@ -98,21 +97,24 @@ enyo.kind({
             var data = this.$.canvas.hasNode().toDataURL('image/png');
             this.$.photo.hasNode().setAttribute('src', data);
 
-            videoTextOut.set('content', videoTextOut.get('content') + '<br>' + data.slice(0,35) + "...");
+            this.textOut(data.slice(0,35) + "...");
         } else {
-        	this.notifyUser($L("Activating camera"));
+        	this.banner($L("Activating camera"));
             this.activateCamera(inSender, inEvent);
         }
     },
 
-	notifyUser: function (msg) {
-        this.warn(msg);
-        var videoTextOut = this.$.videoTextOut;
-        videoTextOut.set('content', videoTextOut.get('content') + '<br>' + msg);
+	banner: function (msg) {
+        this.textOut(msg);
         if (window.PalmSystem) {
             PalmSystem.addBannerMessage(msg, '{}', undefined, "alerts");
         } else {
             alert(msg);
         }
+	},
+	textOut: function (msg) {
+        this.log(msg);
+        var videoTextOut = this.$.videoTextOut;
+        videoTextOut.set('content', videoTextOut.get('content') + msg + '<br>');
 	}
 });
