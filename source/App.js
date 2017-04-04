@@ -67,7 +67,8 @@ enyo.kind({
 				{kind: "ListItem", icon: "icon.png", title: "Windowing", ontap: "openWindowing"},
 				{kind: "ListItem", icon: "icon.png", title: "PalmBus Subscriptions", ontap: "openSubscriptions"},
 				{kind: "ListItem", icon: "icon.png", title: "Notifications", ontap: "openNotifications"},
-				{kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"},
+                {kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"},
+                {kind: "ListItem", icon: "icon.png", title: "Camera", ontap: "openCamera"},
 				{kind: "ListItem", icon: "icon.png", title: "File APIs", ontap: "openFileApis"},
 				{kind: "ListItem", icon: "icon.png", title: "Responsive Images", ontap: "openResponsiveImg"}
 			]}
@@ -84,7 +85,8 @@ enyo.kind({
 			{kind: "Windowing"},
 			{kind: "Subscriptions"},
 			{kind: "Notifications"},
-			{kind: "Geolocation"},
+            {kind: "Geolocation"},
+            {kind: "Camera"},
 			{kind: "FileApis"},
 			{kind: "ResponsiveImg"}
 		]}
@@ -110,14 +112,17 @@ enyo.kind({
 	openNotifications: function(inSender) {
 		this.openPanel(5);
 	},
-	openGeolocation: function (inSender, inEvent) {
-		this.openPanel(6);
-	},
+    openGeolocation: function (inSender, inEvent) {
+        this.openPanel(6);
+    },
+    openCamera: function (inSender, inEvent) {
+        this.openPanel(7);
+    },
 	openFileApis: function (inSender) {
-		this.openPanel(7)
+		this.openPanel(8)
 	},
 	openResponsiveImg: function (inSender, inEvent) {
-		this.openPanel(8);
+		this.openPanel(9);
 	}
 });
 

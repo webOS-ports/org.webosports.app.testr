@@ -76,6 +76,40 @@ td, th {
 	text-align: center;
 }
 
+/* Camera */
+
+#video {
+	border: 1px solid black;
+	box-shadow: 2px 2px 3px black;
+	width:320px;
+	height:240px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#canvas {
+	display:none;
+	/*display: block;*/
+	/*margin-top: 1em;*/
+	/*margin-left: auto;*/
+	/*margin-right: auto;*/
+}
+
+#photo {
+	border: 1px solid black;
+	box-shadow: 2px 2px 3px black;
+	width: 320px;
+	height: 240px;
+	display: block;
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* Responsive Images */
+
 .test-webkit-image-set {
 	background-image: url(../../assets/nonresponsive-1x.png);
 	background-image: -webkit-image-set(url(../../assets/responsive-1x.png) 1x, url(../../assets/responsive-2x.png) 2x);
