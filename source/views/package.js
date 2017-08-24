@@ -10,6 +10,7 @@ enyo.depends(
     "Camera.js",
 	"FileApis.js",
 	"ResponsiveImg.js",
+	"WebComponents.js",
 	// dashboard
 	"Dashboard.js",
 	// system popup
