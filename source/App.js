@@ -70,7 +70,8 @@ enyo.kind({
                 {kind: "ListItem", icon: "icon.png", title: "Geolocation", ontap: "openGeolocation"},
                 {kind: "ListItem", icon: "icon.png", title: "Camera", ontap: "openCamera"},
 				{kind: "ListItem", icon: "icon.png", title: "File APIs", ontap: "openFileApis"},
-				{kind: "ListItem", icon: "icon.png", title: "Responsive Images", ontap: "openResponsiveImg"}
+                {kind: "ListItem", icon: "icon.png", title: "Responsive Images", ontap: "openResponsiveImg"},
+                {kind: "ListItem", icon: "icon.png", title: "Web Components", ontap: "openWebComponents"}
 			]}
 		]},
 		{name: "ContentPanels",
@@ -88,7 +89,8 @@ enyo.kind({
             {kind: "Geolocation"},
             {kind: "Camera"},
 			{kind: "FileApis"},
-			{kind: "ResponsiveImg"}
+            {kind: "ResponsiveImg"},
+            {kind: "WebComponents"}
 		]}
 	],
 	openPanel: function(index) {
@@ -121,9 +123,12 @@ enyo.kind({
 	openFileApis: function (inSender) {
 		this.openPanel(8)
 	},
-	openResponsiveImg: function (inSender, inEvent) {
-		this.openPanel(9);
-	}
+    openResponsiveImg: function (inSender, inEvent) {
+        this.openPanel(9);
+    },
+    openWebComponents: function (inSender, inEvent) {
+        this.openPanel(10);
+    }
 });
 
 enyo.kind({

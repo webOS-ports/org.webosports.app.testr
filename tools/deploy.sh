@@ -33,7 +33,7 @@ while [ "$1" != "" ]; do
         -i | --install )
             # install
             adb push "$DEST" /usr/palm/applications/org.webosports.app.testr
-            adb shell systemctl restart luna-next
+            # adb shell systemctl restart luna-next
             
             # enable inspection of web views
             adb forward tcp:1122 tcp:1122
