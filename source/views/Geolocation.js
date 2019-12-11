@@ -81,7 +81,7 @@ enyo.kind({
 		{
 			name: "singleLocationService",
 			kind: "LunaService",
-			service: "palm://com.palm.location/",
+			service: "palm://org.webosports.service.location/",
 			method: "getCurrentPosition",
 			subscribe: false,
 			resubscribe: false,
