@@ -3,7 +3,7 @@
  */
 
 enyo.kind({
-	name: "Geolocation",
+	name: "Geolocation2",
 	layoutKind: "FittableRowsLayout",
 	components: [
 	    { kind: "onyx.Toolbar", layoutKind: "FittableColumnsLayout", components: [

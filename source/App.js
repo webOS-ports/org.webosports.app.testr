@@ -86,7 +86,7 @@ enyo.kind({
 			{kind: "Windowing"},
 			{kind: "Subscriptions"},
 			{kind: "Notifications"},
-            {kind: "Geolocation"},
+            {kind: "Geolocation2"},
             {kind: "Camera"},
 			{kind: "FileApis"},
             {kind: "ResponsiveImg"},
