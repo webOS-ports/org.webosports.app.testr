@@ -8,6 +8,7 @@
 	"main": "index.html",
 	"icon": "icon.png",
 	"uiRevision": "2",
-	"requiredPermissions": ["system", "networking", "networking.internal", "settings", "database", "database.internal", "services", "signals.all", "applications", "devices", "media", "networking", "notifications", "time"]
+	"trustLevel" : "trusted",
+	"requiredPermissions": ["appmanager.management", "database.management", "database.operation", "location-service.operation", "luna-sysmgr.operation", "systemsettings.query", "systemsettings.management"]
 }
 
