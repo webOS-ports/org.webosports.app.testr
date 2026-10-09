@@ -16,38 +16,56 @@ enyo.kind({
 			horizontal: "hidden",
 			components: [
 				{style: "margin-left: auto; margin-right: auto; max-width: 35em; padding: 1rem;", components: [
-				    {kind: "FittableColumns", components: [
-   				        {content: $L("Accuracy: "), style: "color: white; line-height: 2.5rem;"},
+					{content: "luna://com.webos.service.location", style: "color: white; font-weight: bold;"},
+					{name: "handlersOut", content: $L("handlers: asking..."), allowHtml: true, style: "color: white; margin-top: 0.5rem;"},
+				    {kind: "FittableColumns", style: "margin-top: 1rem;", components: [
+   				        {content: $L("Handler: "), style: "color: white; line-height: 2.5rem;"},
 					    {kind: "onyx.PickerDecorator", style: "margin-left: 1rem;", components: [
 					        {},   // PickerButton
-					        {name: "accuracyPckr", kind: "onyx.Picker", components: [
-					            {content: $L("High (1)"), value: 1},
-					            {content: $L("Medium (2)"), active: true, value: 2},
-					            {content: $L("Low (3)"), value: 3}
+					        {name: "handlerPckr", kind: "onyx.Picker", components: [
+					            {content: "hybrid", value: "hybrid", active: true},
+					            {content: "gps", value: "gps"},
+					            {content: "network", value: "network"},
+					            {content: "passive", value: "passive"}
 					        ]}
 					    ]}
    				    ]},
 				    {kind: "FittableColumns", style: "margin-top: 1rem;", components: [
-   				        {content: $L("Max age: "), style: "color: white; line-height: 2rem;"},
+   				        {content: $L("Response timeout: "), style: "color: white; line-height: 2rem;"},
    					    {kind: "onyx.InputDecorator", style: "margin-left: 1rem;", components: [
-    				        {name: "ageInpt", kind: "onyx.Input", type: "number", value: "0", attributes: {min: "0", step: "1"}, style: "width: 5rem;"}
+    				        {name: "responseTimeoutInpt", kind: "onyx.Input", type: "number", value: "30", attributes: {min: "0", step: "1"}, style: "width: 5rem;"}
     				    ]},
-   				        {content: $L("sec."), style: "color: white; line-height: 2rem; margin-left: 1rem;"}
+   				        {content: $L("sec. (0 = none)"), style: "color: white; line-height: 2rem; margin-left: 1rem;"}
 				    ]},
 				    {kind: "FittableColumns", style: "margin-top: 1rem;", components: [
-				        {content: $L("Response time: "), style: "color: white; line-height: 2.5rem;"},
-					    {kind: "onyx.PickerDecorator", style: "margin-left: 1rem;", components: [
-					        {},   // PickerButton
-					        {name: "responseTimePckr", kind: "onyx.Picker", components: [
-					            {content: $L("< 5 sec (1)"), value: 1},
-					            {content: $L("5–20 sec (2)"), active: true, value: 2},
-					            {content: $L("> 20 sec (3)"), value: 3}
-					        ]}
-					    ]}
-					]},
+   				        {content: $L("Cached max age: "), style: "color: white; line-height: 2rem;"},
+   					    {kind: "onyx.InputDecorator", style: "margin-left: 1rem;", components: [
+    				        {name: "cachedAgeInpt", kind: "onyx.Input", type: "number", value: "0", attributes: {min: "0", step: "1"}, style: "width: 5rem;"}
+    				    ]},
+   				        {content: $L("sec. (0 = any)"), style: "color: white; line-height: 2rem; margin-left: 1rem;"}
+				    ]},
 					{kind: "onyx.Groupbox", style: "margin-top: 1rem;", components: [
-						{kind: "onyx.Button", style: "width: 100%", content: $L("PalmBus (priv.) getCurrentPosition"), ontap: "singleLocation"},
+						{kind: "onyx.Button", style: "width: 100%", content: $L("getLocationUpdates (first fix)"), ontap: "firstFix"},
+						{kind: "onyx.Button", style: "width: 100%; margin-top: 0.5rem;", content: $L("getCachedPosition"), ontap: "cachedPosition"},
 						{name: "singleOut", content: " &nbsp; ", allowHtml: true, style: "padding: 5px; color: white"}
+					]},
+					{content: $L("Mock position (network provider; needs network location on). Pushed while a request is running."),
+						style: "color: white; margin-top: 1rem;"},
+				    {kind: "FittableColumns", style: "margin-top: 0.5rem;", components: [
+   				        {content: $L("lat "), style: "color: white; line-height: 2rem;"},
+   					    {kind: "onyx.InputDecorator", style: "margin-left: 0.5rem;", components: [
+    				        {name: "mockLatInpt", kind: "onyx.Input", type: "number", value: "52.3702", attributes: {step: "any"}, style: "width: 6rem;"}
+    				    ]},
+   				        {content: $L("long "), style: "color: white; line-height: 2rem; margin-left: 1rem;"},
+   					    {kind: "onyx.InputDecorator", style: "margin-left: 0.5rem;", components: [
+    				        {name: "mockLongInpt", kind: "onyx.Input", type: "number", value: "4.8952", attributes: {step: "any"}, style: "width: 6rem;"}
+    				    ]}
+				    ]},
+					{kind: "onyx.Groupbox", style: "margin-top: 0.5rem;", components: [
+						{kind: "onyx.Button", style: "width: 100%", content: $L("mock/enable network"), ontap: "enableMock"},
+						{kind: "onyx.Button", style: "width: 100%; margin-top: 0.5rem;", content: $L("mock/setLocation now"), ontap: "pushMockNow"},
+						{kind: "onyx.Button", style: "width: 100%; margin-top: 0.5rem;", content: $L("mock/disable network"), ontap: "disableMock"},
+						{name: "mockOut", content: " &nbsp; ", allowHtml: true, style: "padding: 5px; color: white"}
 					]}
 				]},
 				{tag: "hr"},
@@ -79,46 +97,159 @@ enyo.kind({
 		},
 		
 		{
-			name: "singleLocationService",
+			name: "updatesService",
 			kind: "LunaService",
-			service: "palm://org.webosports.service.location/",
-			method: "getCurrentPosition",
-			subscribe: false,
+			service: LocationService.service,
+			method: "getLocationUpdates",
+			subscribe: true,
 			resubscribe: false,
-			onResponse: "singleLocationSuccess",
-			onError: "singleLocationFail"
+			onResponse: "firstFixResponse",
+			onError: "firstFixError"
+		},
+		{
+			name: "handlersService",
+			kind: "LunaService",
+			service: LocationService.service,
+			method: "getAllLocationHandlers",
+			subscribe: true,
+			resubscribe: false,
+			onResponse: "handlersResponse",
+			onError: "handlersError"
 		}
 	],
-		
-	singleLocation: function (inSender, inEvent) {
-		this.$.singleOut.setContent($L("requesting position..."));
-		this.log("accuracy: ", typeof this.$.accuracyPckr.getSelected().value, this.$.accuracyPckr.getSelected().value,
-				"   max age: ", typeof parseInt(this.$.ageInpt.getValue(), 10), parseInt(this.$.ageInpt.getValue(), 10),
-				"   response time: ", typeof this.$.responseTimePckr.getSelected().value, this.$.responseTimePckr.getSelected().value);
-		this.$.singleLocationService.send({accuracy: this.$.accuracyPckr.getSelected().value, maximumAge: parseInt(this.$.ageInpt.getValue(), 10), responseTime: this.$.responseTimePckr.getSelected().value});
+
+	// Whether this panel turned the network mock provider on.
+	mockEnabled: false,
+
+	create: function () {
+		this.inherited(arguments);
+		this.$.handlersService.send({subscribe: true});
 	},
-	singleLocationSuccess: function (inSender, inEvent) {
-		this.log(inEvent);
-		this.$.singleOut.setContent($L("position returned: ") + JSON.stringify(inEvent, 
-				["altitude", "heading", "horizAccuracy", "latitude", "longitude", "timestamp", "velocity", "vertAccuracy"], 1));
-	},
-	singleLocationFail: function (inSender, inEvent) {
-		this.log(inEvent);
-		var errorCode = inEvent.errorCode;
-		var errorText = inEvent.errorText;
-		var msg = "errorCode: " + errorCode + "<br>" + 
-				"errorText: " + errorText;
-		if (this.errorCodes[errorCode]) {
-			msg = this.errorCodes[errorCode] + "<br>" + msg;
+
+	handlersResponse: function (inSender, inEvent) {
+		var handlers = inEvent.handlers || [];
+		var parts = [];
+		var anyOn = false;
+		for (var i = 0; i < handlers.length; i++) {
+			parts.push(handlers[i].name + ": " + (handlers[i].state ? "on" : "off"));
+			anyOn = anyOn || handlers[i].state;
 		}
-		this.$.singleOut.setContent(msg);
+		var msg = $L("handlers: ") + parts.join(", ");
+		if (!anyOn) {
+			msg += "<br>" + $L("Location is switched off: turn on GPS or network location in Settings &rarr; Location.");
+		}
+		this.$.handlersOut.setContent(msg);
 	},
-	errorCodes: ["Success", "Timeout", "Position_Unavailable", "Unknown", 
-	             "GPS_Permanent_Error - No GPS fix but can still get the cell and Wifi fixes. A TouchPad without GPS returns this error.", 
-	             "LocationServiceOFF - No Location source available. Both Google and GPS are off.", 
-	             "Permission Denied - The user has not accepted the terms of use for the Google Location Service, or the Google Service is off.", 
-	             "The application already has a pending message ", 
-	             "The application has been temporarily blacklisted. (The user is not allowing this application to use this service.)"],
+	handlersError: function (inSender, inEvent) {
+		this.$.handlersOut.setContent($L("getAllLocationHandlers failed:") + "<br>" + LocationService.describeError(inEvent));
+	},
+
+	/*
+	 * com.webos.service.location has no getCurrentPosition. A single position
+	 * is a getLocationUpdates subscription that is cancelled once the first
+	 * fix arrives.
+	 */
+	firstFix: function (inSender, inEvent) {
+		this.stopFirstFix();
+		var params = {subscribe: true, Handler: this.$.handlerPckr.getSelected().value};
+		var timeout = parseInt(this.$.responseTimeoutInpt.getValue(), 10);
+		if (timeout > 0) {
+			params.responseTimeout = timeout;
+		}
+		this.log(params);
+		this.$.singleOut.setContent($L("requesting position... ") + JSON.stringify(params));
+		this.fixRequest = this.$.updatesService.send(params);
+		if (this.mockEnabled) {
+			// setLocation only takes while a request is running.
+			this.pushMock(5);
+		}
+	},
+	stopFirstFix: function () {
+		if (this.fixRequest) {
+			this.fixRequest.cancel();
+			this.fixRequest = null;
+		}
+	},
+	firstFixResponse: function (inSender, inEvent) {
+		this.log(inEvent);
+		if (inEvent.originator !== this.fixRequest || inEvent.latitude === undefined) {
+			return;
+		}
+		this.stopFirstFix();
+		this.$.singleOut.setContent($L("position returned:") + "<br>" + LocationService.describePosition(inEvent));
+	},
+	firstFixError: function (inSender, inEvent) {
+		this.log(inEvent);
+		if (inEvent.originator === this.fixRequest) {
+			this.fixRequest = null;
+		}
+		this.$.singleOut.setContent(LocationService.describeError(inEvent));
+	},
+
+	cachedPosition: function (inSender, inEvent) {
+		var params = {Handler: this.$.handlerPckr.getSelected().value};
+		var maxAge = parseInt(this.$.cachedAgeInpt.getValue(), 10);
+		if (maxAge > 0) {
+			params.maximumAge = maxAge * 1000;   // milliseconds
+		}
+		this.$.singleOut.setContent($L("requesting cached position... ") + JSON.stringify(params));
+		var request = new enyo.ServiceRequest({service: LocationService.service, method: "getCachedPosition"});
+		request.response(this, function (inRequest, inResponse) {
+			this.$.singleOut.setContent($L("cached position:") + "<br>" + LocationService.describePosition(inResponse));
+		});
+		request.error(this, function (inRequest, inResponse) {
+			this.$.singleOut.setContent(LocationService.describeError(inResponse));
+		});
+		request.go(params);
+	},
+
+	callMock: function (method, params, onSuccess) {
+		var request = new enyo.ServiceRequest({service: LocationService.service, method: "mock/" + method});
+		request.response(this, function (inRequest, inResponse) {
+			this.$.mockOut.setContent("mock/" + method + ": " + LocationService.describeError(inResponse));
+			if (onSuccess) {
+				onSuccess.call(this, inResponse);
+			}
+		});
+		request.error(this, function (inRequest, inResponse) {
+			this.$.mockOut.setContent("mock/" + method + " failed:<br>" + LocationService.describeError(inResponse));
+			if (inResponse.errorCode === LocationService.NOT_STARTED && this.mockRetries > 0) {
+				this.mockRetries--;
+				this.startJob("pushMock", "sendMockLocation", 1000);
+			}
+		});
+		request.go(params);
+	},
+	enableMock: function (inSender, inEvent) {
+		this.callMock("enable", {name: "network"}, function () {
+			this.mockEnabled = true;
+		});
+	},
+	disableMock: function (inSender, inEvent) {
+		this.stopJob("pushMock");
+		this.callMock("disable", {name: "network"}, function () {
+			this.mockEnabled = false;
+		});
+	},
+	pushMockNow: function (inSender, inEvent) {
+		this.pushMock(0);
+	},
+	// Sends the mock position, retrying while the request it is meant for
+	// has not started yet (errorCode 18).
+	pushMock: function (retries) {
+		this.mockRetries = retries;
+		this.startJob("pushMock", "sendMockLocation", retries > 0 ? 1000 : 0);
+	},
+	sendMockLocation: function () {
+		this.callMock("setLocation", {
+			name: "network",
+			location: {
+				latitude: parseFloat(this.$.mockLatInpt.getValue()),
+				longitude: parseFloat(this.$.mockLongInpt.getValue()),
+				horizAccuracy: 25
+			}
+		});
+	},
 
      html5CurrentLocation: function (inSender, inEvent) {
     	 var panel = this;

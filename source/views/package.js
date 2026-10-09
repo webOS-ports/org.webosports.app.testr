@@ -4,6 +4,7 @@ enyo.depends(
 	"Telephony.js",
 	"Windowing.js",
 	"Receiver.js",
+	"LocationService.js",
 	"Subscriptions.js",
 	"Notifications.js",
     "Geolocation.js",

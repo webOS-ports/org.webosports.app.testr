@@ -10,7 +10,9 @@
  * This should trigger the NotificationResponse.  When a NotificationResponse is received, the test issues another find. 
  * Thus, if/when the NotificationResponse is not received, the cycle is broken and no more objects are put.
  * 
- * subscribeGeo() subscribes to geolocation updates using LunaService
+ * subscribeGeo() subscribes to luna://com.webos.service.location/getLocationUpdates (hybrid handler)
+ * using LunaService. On a device without a location source, turn on the mock position in the
+ * Geolocation panel and push it there while this subscription runs.
  */
 
 enyo.kind({
@@ -69,7 +71,7 @@ enyo.kind({
         	    	    {
         	    	    	name: "geoOut",
         	    	    	allowHtml: true,
-        	    	    	content: "palm://com.palm.location/startTracking<br>",
+        	    	    	content: "luna://com.webos.service.location/getLocationUpdates<br>",
         	    	    	style: "color: white; padding: 5px;"
         	    	    }
 	    	    	]
@@ -79,8 +81,8 @@ enyo.kind({
 	    {
 	    	name: "geoService",
 	    	kind: "enyo.LunaService",
-	    	service: "palm://com.palm.location",
-	    	method: "startTracking",
+	    	service: LocationService.service,
+	    	method: "getLocationUpdates",
 	    	subscribe: true,
 	    	resubscribe: false,
 	    	onResponse: "geoResponse",
@@ -237,30 +239,20 @@ enyo.kind({
 	},
 	
 	subscribeGeo: function() {
-		this.$.geoService.send({});
+		this.$.geoService.send({subscribe: true, Handler: "hybrid"});
     },
     geoResponse: function (inSender, inEvent) {
     	this.log(inEvent);
+    	if (inEvent.latitude === undefined) {
+    		return;
+    	}
     	this.$.geoOut.addContent($L("position returned: ") + JSON.stringify(inEvent, 
-				["altitude", "heading", "horizAccuracy", "latitude", "longitude", "timestamp", "velocity", "vertAccuracy"], 1) + '<br>');
+				["altitude", "direction", "horizAccuracy", "latitude", "longitude", "speed", "timestamp", "vertAccuracy"], 1) + '<br>');
     	this.$.geoScroller.scrollToBottom();    	
     },
     geoError: function (inSender, inEvent) {
     	this.error(inEvent);
-		var errorCode = inEvent.errorCode;
-		var errorText = inEvent.errorText;
-		var msg = "errorCode: " + errorCode + "<br>" + 
-				"errorText: " + errorText;
-        if (this.errorCodes[errorCode]) {
-        	msg = this.errorCodes[errorCode] + "<br>" + msg;
-        }
-        this.$.geoOut.addContent(msg + '<br>');
+        this.$.geoOut.addContent(LocationService.describeError(inEvent) + '<br>');
     	this.$.geoScroller.scrollToBottom();    	
-    },
-	errorCodes: ["Success", "Timeout", "Position_Unavailable", "Unknown", 
-	             "GPS_Permanent_Error - No GPS fix but can still get the cell and Wifi fixes. A TouchPad without GPS returns this error.", 
-	             "LocationServiceOFF - No Location source available. Both Google and GPS are off.", 
-	             "Permission Denied - The user has not accepted the terms of use for the Google Location Service, or the Google Service is off.", 
-	             "The application already has a pending message ", 
-	             "The application has been temporarily blacklisted. (The user is not allowing this application to use this service.)"]
+    }
 });
