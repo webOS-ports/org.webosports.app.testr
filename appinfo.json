@@ -11,6 +11,6 @@
 	"trustLevel" : "trusted",
 	"allowVideoCapture": true,
 	"webAppPermissions": ["notifications"],
-	"requiredPermissions": ["appmanager.management", "database.management", "database.operation", "location.query", "luna-sysmgr.operation",  "mediacontroller.query", "systemsettings.query", "systemsettings.management"]
+	"requiredPermissions": ["appmanager.management", "database.management", "database.operation", "location.operation", "location.query", "luna-sysmgr.operation",  "mediacontroller.query", "systemsettings.query", "systemsettings.management"]
 }
 
