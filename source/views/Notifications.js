@@ -202,12 +202,12 @@ enyo.kind({
 	createDashboardNotificationPixel: function() {
 		++this.dashboardCount;
 		this.log("dashboard.html", this.dashboardCount);
-		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard Pixel", 'attributes={"window":"dashboard", "dashHeight":180}');
+		window.open("dashboard.html?count="+this.dashboardCount+"&lines=20", "Testr Dashboard Pixel", 'attributes={"window":"dashboard", "dashHeight":180}');
 	},
 	createDashboardNotificationGridunit: function() {
 		++this.dashboardCount;
 		this.log("dashboard.html", this.dashboardCount);
-		window.open("dashboard.html?count="+this.dashboardCount, "Testr Dashboard Gridunit", 'attributes={"window":"dashboard","metrics":"units", "dashHeight":32}');
+		window.open("dashboard.html?count="+this.dashboardCount+"&lines=20", "Testr Dashboard Gridunit", 'attributes={"window":"dashboard","metrics":"units", "dashHeight":32}');
 	},
 	createDashboardNotificationClickableWhenLocked: function() {
 		++this.dashboardCount;

@@ -1,37 +1,29 @@
+/*
+ * A dashboard as legacy webOS applications drew one: no background of its
+ * own, since the shell draws the entry behind it (webOS 2.2.4's pill on a
+ * phone, a row of webOS 3.0.5's drop-down on a tablet), and the shell's toast
+ * layout - see testr-dashboard in style/App.css.
+ *
+ * "lines" (from the dashboard.html query) above 2 adds that many lines in
+ * all under the title and message, for the taller dashboards that test
+ * dashHeight; the default height shows the two lines that fit it.
+ */
 enyo.kind({
     name: "Dashboard",
-    style: "color:white; background-color:#333",
+    classes: "testr-dashboard",
+    lines: 2,
     handlers: {
         ontap: "handleTap"
     },
     components:[
-        {kind: "enyo.FittableColumns", classes: 'flex-auto', components: [
-            {style: "width: 50px; margin-right: 4px; margin-left: 6px; margin-top: 2px; position: relative;", components: [
-                {style: "width: 48px; height: 48px; background: url(assets/Contacts-favorites-star-blue.png) center center no-repeat;" }
-            ]},
-            {kind: "enyo.FittableRows", style: "color: #FFF;margin-top: -1px;margin-left: 10px;border: none;overflow: hidden;font-size: 16px;width: 270px;min-height: 53px;", components: [
-                {name: "notificationTitle", style: "white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-weight: bold;padding-top:6px"},
-                {name: "notificationMessage", style: "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; margin-top: -2px;"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "third line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "fourth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "fifth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "sixth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "seventh line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "eighth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "ninth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "tenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "eleventh line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "twelfth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "thirteenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "fourteenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "fifteenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "sixteenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "seventeenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "eighteenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "nineteenth line"},
-                {style: "font-size: 14px; margin-top: -2px;", content: "twentieth line"}
+        {classes: "testr-dashboard-row", components: [
+            {classes: "testr-dashboard-icon"},
+            {classes: "testr-dashboard-text", components: [
+                {name: "notificationTitle", classes: "testr-dashboard-title"},
+                {name: "notificationMessage", classes: "testr-dashboard-line"}
             ]}
-        ]}
+        ]},
+        {name: "moreLines", classes: "testr-dashboard-more"}
     ],
 
     create: function() {
@@ -40,6 +32,18 @@ enyo.kind({
         var count = arguments[0].count || 0;
         var msg = enyo.quickMacroize($L("You have {$count} item(s)"), {count: count});
         this.$.notificationMessage.set('content', msg);
+
+        var lines = parseInt(arguments[0].lines, 10) || this.lines;
+        var names = ["third","fourth","fifth","sixth","seventh","eighth","ninth","tenth","eleventh","twelfth","thirteenth","fourteenth","fifteenth","sixteenth","seventeenth","eighteenth","nineteenth","twentieth"];
+        if (lines > 2) {
+            this.addClass("testr-dashboard-tall");
+            for (var i = 0; i < lines - 2 && i < names.length; i++) {
+                this.$.moreLines.createComponent({
+                    classes: "testr-dashboard-line",
+                    content: $L(names[i] + " line")
+                });
+            }
+        }
     },
 
     handleTap: function() {

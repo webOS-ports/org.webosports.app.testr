@@ -116,3 +116,77 @@ td, th {
 	width:320px;
 	height:240px;
 }
+/*
+ * The dashboard (dashboard.html, views/Dashboard.js), laid out as the shell
+ * lays out a toast (luna-next-cardshell NotificationItem.qml) and as
+ * com.palm.systemui lays out its own dashboards, so they line up in the
+ * notification area. Every length is a share of --row, the entry's height:
+ * the whole window (100vh) at the default height, Mojo's 52px row in a
+ * taller dashboard, whose window is the dashHeight asked for.
+ *
+ * Phone (webOS 2.2.4): icon 0.62 of the row, 0.2 in; text from 1.17, a bold
+ * title over a regular line of the same size. Tablet (webOS 3.0.5): icon
+ * centred in Enyo's 50/52 cell, text from 74/52, a smaller second line. A
+ * tablet entry is the drop-down's width by gu(5.6), 5.36 to 1, a phone's
+ * spans the screen, 7.6 to 1 or more, so the shape tells them apart; a tall
+ * dashboard has no such shape and takes the phone's layout.
+ */
+html, body.testr-dashboard-page {
+	background: transparent;
+}
+.testr-dashboard {
+	--row: 100vh;
+	--body-size: calc(var(--row) * 0.315);
+	--icon-left: calc(var(--row) * 0.2);
+	--text-left: calc(var(--row) * 1.17);
+	color: #fff;
+	height: 100vh;
+	overflow: hidden;
+}
+.testr-dashboard.testr-dashboard-tall {
+	--row: 52px;
+}
+.testr-dashboard-row {
+	position: relative;
+	height: var(--row);
+}
+.testr-dashboard-icon {
+	position: absolute;
+	left: var(--icon-left);
+	top: calc(var(--row) * 0.19);
+	width: calc(var(--row) * 0.62);
+	height: calc(var(--row) * 0.62);
+	background: url(../../icon.png) center center no-repeat;
+	background-size: contain;
+}
+.testr-dashboard-text {
+	position: absolute;
+	left: var(--text-left);
+	right: calc(var(--row) * 0.2);
+	top: calc(var(--row) * 0.1);
+}
+.testr-dashboard-title,
+.testr-dashboard-line {
+	font-size: calc(var(--row) * 0.315);
+	line-height: calc(var(--row) * 0.4);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.testr-dashboard-title {
+	font-weight: bold;
+}
+.testr-dashboard-line {
+	font-size: var(--body-size);
+}
+.testr-dashboard-more {
+	padding-left: var(--text-left);
+	padding-right: calc(var(--row) * 0.2);
+}
+@media (max-aspect-ratio: 13/2) and (min-aspect-ratio: 4/1) {
+	.testr-dashboard {
+		--body-size: calc(var(--row) * 0.275);
+		--icon-left: calc(var(--row) * 0.286);
+		--text-left: calc(var(--row) * 1.423);
+	}
+}
