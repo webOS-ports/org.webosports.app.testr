@@ -116,3 +116,79 @@ td, th {
 	width:320px;
 	height:240px;
 }
+/*
+ * The dashboard (dashboard.html, views/Dashboard.js), laid out as the shell
+ * lays out a toast (luna-next-cardshell NotificationItem.qml) and as
+ * com.palm.systemui lays out its own dashboards, so they line up in the
+ * notification area. Every length is a share of --row, the entry's height:
+ * the whole window (100vh) at the default height. A taller dashboard's
+ * window is the dashHeight asked for, so there views/Dashboard.js sets
+ * --row to the shell's entry height, PalmSystem.deviceInfo.dashboardHeight,
+ * and to Mojo's 52px row when WebAppMgr does not report one.
+ *
+ * Phone (webOS 2.2.4): Mojo's 48 px icon on a 52 px row, 48/52 of the row,
+ * centred on the 1.02 wide icon pill; text from 1.34, as on a Pre, a bold
+ * title over a regular line of the same size. Tablet (webOS 3.0.5): icon
+ * centred in Enyo's 50/52 cell, text from 74/52, a smaller second line.
+ * Which of the two is the shell's notificationStyle, which
+ * views/Dashboard.js follows and marks as testr-dashboard-tablet; either can
+ * be listed at the bottom or in the status bar's drop-down, so the window's
+ * shape does not say.
+ */
+html, body.testr-dashboard-page {
+	background: transparent;
+}
+.testr-dashboard {
+	--row: 100vh;
+	--body-size: calc(var(--row) * 0.315);
+	--icon-left: calc(var(--row) * 0.04846);
+	--text-left: calc(var(--row) * 1.34);
+	color: #fff;
+	height: 100vh;
+	overflow: hidden;
+}
+.testr-dashboard.testr-dashboard-tall {
+	--row: 52px;
+}
+.testr-dashboard-row {
+	position: relative;
+	height: var(--row);
+}
+.testr-dashboard-icon {
+	position: absolute;
+	left: var(--icon-left);
+	top: calc(var(--row) * 0.03846);
+	width: calc(var(--row) * 0.92308);
+	height: calc(var(--row) * 0.92308);
+	background: url(../../icon.png) center center no-repeat;
+	background-size: contain;
+}
+.testr-dashboard-text {
+	position: absolute;
+	left: var(--text-left);
+	right: calc(var(--row) * 0.2);
+	top: calc(var(--row) * 0.1);
+}
+.testr-dashboard-title,
+.testr-dashboard-line {
+	font-size: calc(var(--row) * 0.315);
+	line-height: calc(var(--row) * 0.4);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.testr-dashboard-title {
+	font-weight: bold;
+}
+.testr-dashboard-line {
+	font-size: var(--body-size);
+}
+.testr-dashboard-more {
+	padding-left: var(--text-left);
+	padding-right: calc(var(--row) * 0.2);
+}
+.testr-dashboard.testr-dashboard-tablet {
+	--body-size: calc(var(--row) * 0.275);
+	--icon-left: calc(var(--row) * 0.13462);
+	--text-left: calc(var(--row) * 1.423);
+}

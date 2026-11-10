@@ -15,7 +15,7 @@
     <script src="build/enyo.js"></script>
     <script src="build/app.js"></script>
 </head>
-<body class="enyo-unselectable">
+<body class="enyo-unselectable testr-dashboard-page">
     <script type="text/javascript">
         enyo.ready(function () {
             if (window.location.search) {
@@ -27,9 +27,12 @@
                     if (field[0] === "count") {
                         var dashboardCount = field[1];
                     }
+                    if (field[0] === "lines") {
+                        var dashboardLines = field[1];
+                    }
                 }
             }
-            new Dashboard({count: dashboardCount}).renderInto(document.body);
+            new Dashboard({count: dashboardCount, lines: dashboardLines}).renderInto(document.body);
         });
     </script>
 </body>
