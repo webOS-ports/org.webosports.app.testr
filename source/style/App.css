@@ -121,15 +121,18 @@ td, th {
  * lays out a toast (luna-next-cardshell NotificationItem.qml) and as
  * com.palm.systemui lays out its own dashboards, so they line up in the
  * notification area. Every length is a share of --row, the entry's height:
- * the whole window (100vh) at the default height, Mojo's 52px row in a
- * taller dashboard, whose window is the dashHeight asked for.
+ * the whole window (100vh) at the default height. A taller dashboard's
+ * window is the dashHeight asked for, so there views/Dashboard.js sets
+ * --row to the shell's entry height, PalmSystem.deviceInfo.dashboardHeight,
+ * and to Mojo's 52px row when WebAppMgr does not report one.
  *
  * Phone (webOS 2.2.4): icon 0.62 of the row, 0.2 in; text from 1.17, a bold
  * title over a regular line of the same size. Tablet (webOS 3.0.5): icon
  * centred in Enyo's 50/52 cell, text from 74/52, a smaller second line. A
  * tablet entry is the drop-down's width by gu(5.6), 5.36 to 1, a phone's
- * spans the screen, 7.6 to 1 or more, so the shape tells them apart; a tall
- * dashboard has no such shape and takes the phone's layout.
+ * spans the screen, 7.6 to 1 or more, so the shape tells them apart. A tall
+ * dashboard has no such shape: Dashboard.js marks it testr-dashboard-tablet
+ * from the screen size instead.
  */
 html, body.testr-dashboard-page {
 	background: transparent;
@@ -189,4 +192,9 @@ html, body.testr-dashboard-page {
 		--icon-left: calc(var(--row) * 0.286);
 		--text-left: calc(var(--row) * 1.423);
 	}
+}
+.testr-dashboard.testr-dashboard-tablet {
+	--body-size: calc(var(--row) * 0.275);
+	--icon-left: calc(var(--row) * 0.286);
+	--text-left: calc(var(--row) * 1.423);
 }
